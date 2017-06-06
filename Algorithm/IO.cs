@@ -11,7 +11,7 @@ namespace Algorithm
 
         public void ParseWorkerAndTaskAndCondition(ref List<Worker> workers, ref List<Task> tasks)
         {
-            StreamReader sr = new StreamReader("C:\\Users\\Zhdanov\\Documents\\Visual Studio 2015\\Projects\\Algorithm\\Algorithm\\DataForAlgorithm.txt");
+            StreamReader sr = new StreamReader("DataForAlgorithm.txt");
             int counterOfWorkerSerialNumber = 0;
             int counterOfTaskSerialNumber = 0;
             string line;
@@ -21,7 +21,6 @@ namespace Algorithm
             {
                 sr.ReadLine();
             }
-            sr.ReadLine();
 
             ///пока не дошли до конца файла
             while ((line = sr.ReadLine()) != null)
@@ -30,7 +29,7 @@ namespace Algorithm
                 if (buff.Length > 0)
                 {
                     //если это задание
-                    if (buff.Length == 4)
+                    if (buff.Length == 2)
                     {
                         Worker newWorker = new Worker();
 
@@ -42,7 +41,7 @@ namespace Algorithm
                         else Console.WriteLine(result);
                     }
                     //если это работник
-                    else if (buff.Length == 2)
+                    else if (buff.Length == 4)
                     {
                         Task newTask = new Task();
 
