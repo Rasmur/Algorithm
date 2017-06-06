@@ -210,7 +210,7 @@ namespace Algorithm
             }
         }
         
-        public void GetBest(out double fitness)
+        public void GetBest(ref double fitness)
         {
             Genome g = ((Genome)thisGeneration[populationSize - 1]);
 

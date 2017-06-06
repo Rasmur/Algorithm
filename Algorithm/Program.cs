@@ -24,12 +24,12 @@ public static class Program
     {
         GA ga = new GA();
 
-        ga.FitnessFunction = new GAFunction(theActualFunction);
+        //ga.FitnessFunction = new GAFunction(theActualFunction);
 
         ga.Go();
 
-        double fitness;
-        ga.GetBest(out fitness);
+        double fitness = 0.0f;
+        ga.GetBest(ref fitness);
         Console.WriteLine("Best ({0}):", fitness);
         
         Console.ReadLine();
