@@ -4,7 +4,6 @@ using System.IO;
 
 namespace btl.generic
 {
-
     public delegate double GAFunction(double[] values);
 
     /// <summary>
@@ -12,44 +11,25 @@ namespace btl.generic
     /// </summary>
     public class GA
     {
-        /// <summary>
-        /// Default constructor sets mutation rate to 5%, crossover to 80%, population to 100,
-        /// and generations to 2000.
-        /// </summary>
+        private double mutationRate;
+        private int populationSize;
+        private int generationSize;
+        private int genomeSize;
+        private double totalFitness;
+
+        private ArrayList m_thisGeneration;
+        private ArrayList m_nextGeneration;
+        private ArrayList m_fitnessTable;
+
+        static private GAFunction getFitness;
+
         public GA()
         {
-            InitialValues();
-            m_mutationRate = 0.05;
-            m_crossoverRate = 0.80;
-            m_populationSize = 100;
-            m_generationSize = 2000;
-            m_strFitness = "";
+            mutationRate = 0.05;
+            populationSize = 10;
+            generationSize = 200;
         }
-
-        public GA(double crossoverRate, double mutationRate, int populationSize, int generationSize, int genomeSize)
-        {
-            InitialValues();
-            m_mutationRate = mutationRate;
-            m_crossoverRate = crossoverRate;
-            m_populationSize = populationSize;
-            m_generationSize = generationSize;
-            m_genomeSize = genomeSize;
-            m_strFitness = "";
-        }
-
-        public GA(int genomeSize)
-        {
-            InitialValues();
-            m_genomeSize = genomeSize;
-        }
-
-
-        public void InitialValues()
-        {
-            m_elitism = false;
-        }
-
-
+        
         /// <summary>
         /// Method which starts the GA executing.
         /// </summary>
@@ -57,42 +37,26 @@ namespace btl.generic
         {
             if (getFitness == null)
                 throw new ArgumentNullException("Необходимо задать функцию приспособленности");
-            if (m_genomeSize == 0)
+            if (genomeSize == 0)
                 throw new IndexOutOfRangeException("Размер генома установлен неверно");
 
             //  Create the fitness table.
             m_fitnessTable = new ArrayList();
-            m_thisGeneration = new ArrayList(m_generationSize);
-            m_nextGeneration = new ArrayList(m_generationSize);
-            Genome.MutationRate = m_mutationRate;
+            m_thisGeneration = new ArrayList(generationSize);
+            m_nextGeneration = new ArrayList(generationSize);
+            Genome.MutationRate = mutationRate;
 
 
             CreateGenomes();
             RankPopulation();
 
-            StreamWriter outputFitness = null;
-            bool write = false;
-            if (m_strFitness != "")
-            {
-                write = true;
-                outputFitness = new StreamWriter(m_strFitness);
-            }
-
-            for (int i = 0; i < m_generationSize; i++)
+            
+            for (int i = 0; i < generationSize; i++)
             {
                 CreateNextGeneration();
                 RankPopulation();
-                if (write)
-                {
-                    if (outputFitness != null)
-                    {
-                        double d = (double)((Genome)m_thisGeneration[m_populationSize - 1]).Fitness;
-                        outputFitness.WriteLine("{0},{1}", i, d);
-                    }
-                }
             }
-            if (outputFitness != null)
-                outputFitness.Close();
+            
         }
 
         /// <summary>
@@ -103,11 +67,13 @@ namespace btl.generic
         /// <returns>Random individual biased towards highest fitness</returns>
         private int RouletteSelection()
         {
-            double randomFitness = m_random.NextDouble() * m_totalFitness;
+            Random random = new Random();
+
+            double randomFitness = random.NextDouble() * totalFitness;
             int? index = null;
             int mid;
             int first = 0;
-            int last = m_populationSize - 1;
+            int last = populationSize - 1;
             mid = (last - first) / 2;
 
             //т.к. бинарный поиск в ArrayList только для точных значений, то делаем его вручную
@@ -135,19 +101,19 @@ namespace btl.generic
         private void RankPopulation()
         {
             ///общая приспособленность поколения
-            m_totalFitness = 0;
-            for (int i = 0; i < m_populationSize; i++)
+            totalFitness = 0;
+            for (int i = 0; i < populationSize; i++)
             {
                 Genome g = ((Genome)m_thisGeneration[i]);
                 g.Fitness = FitnessFunction(g.Genes());
-                m_totalFitness += g.Fitness;
+                totalFitness += g.Fitness;
             }
             m_thisGeneration.Sort(new GenomeComparer());
 
             //  сортировка в порядке пригодности
             double fitness = 0.0;
             m_fitnessTable.Clear();
-            for (int i = 0; i < m_populationSize; i++)
+            for (int i = 0; i < populationSize; i++)
             {
                 fitness += ((Genome)m_thisGeneration[i]).Fitness;
                 m_fitnessTable.Add((double)fitness);
@@ -159,9 +125,9 @@ namespace btl.generic
         /// </summary>
         private void CreateGenomes()
         {
-            for (int i = 0; i < m_populationSize; i++)
+            for (int i = 0; i < populationSize; i++)
             {
-                Genome g = new Genome(m_genomeSize);
+                Genome g = new Genome(genomeSize);
                 m_thisGeneration.Add(g);
             }
         }
@@ -174,7 +140,7 @@ namespace btl.generic
             //самый худший из текущей популяции
             g = (Genome)m_thisGeneration[0];
 
-            for (int i = 0; i < m_populationSize; i += 2)
+            for (int i = 0; i < populationSize; i += 2)
             {
                 int parentIndex1 = RouletteSelection();
                 int parentIndex2 = RouletteSelection();
@@ -190,12 +156,8 @@ namespace btl.generic
                 m_nextGeneration.Add(child1);
                 m_nextGeneration.Add(child2);
             }
-
-            //m_nextGeneration.Sort(new GenomeComparer());
-
+            
             SelectBestIndividual();
-            //m_nextGeneration[0] = g;
-
         }
 
         private void SelectBestIndividual()
@@ -205,31 +167,13 @@ namespace btl.generic
             bestGeneration.AddRange(m_nextGeneration);
             bestGeneration.Sort(new GenomeComparer());
 
-            bestGeneration.RemoveRange(0, m_populationSize);
+            bestGeneration.RemoveRange(0, populationSize);
 
             m_thisGeneration.Clear();
 
             m_thisGeneration.AddRange(bestGeneration);
         }
 
-        private double m_mutationRate;
-        private double m_crossoverRate;
-        private int m_populationSize;
-        private int m_generationSize;
-        private int m_genomeSize;
-        private double m_totalFitness;
-        private string m_strFitness;
-        private bool m_elitism;
-
-        private ArrayList m_thisGeneration;
-        private ArrayList m_nextGeneration;
-        private ArrayList m_fitnessTable;
-
-        static Random m_random = new Random();
-
-
-
-        static private GAFunction getFitness;
         public GAFunction FitnessFunction
         {
             get
@@ -248,11 +192,11 @@ namespace btl.generic
         {
             get
             {
-                return m_populationSize;
+                return populationSize;
             }
             set
             {
-                m_populationSize = value;
+                populationSize = value;
             }
         }
 
@@ -260,11 +204,11 @@ namespace btl.generic
         {
             get
             {
-                return m_generationSize;
+                return generationSize;
             }
             set
             {
-                m_generationSize = value;
+                generationSize = value;
             }
         }
 
@@ -272,85 +216,20 @@ namespace btl.generic
         {
             get
             {
-                return m_genomeSize;
+                return genomeSize;
             }
             set
             {
-                m_genomeSize = value;
+                genomeSize = value;
             }
         }
-
-        public double CrossoverRate
-        {
-            get
-            {
-                return m_crossoverRate;
-            }
-            set
-            {
-                m_crossoverRate = value;
-            }
-        }
-        public double MutationRate
-        {
-            get
-            {
-                return m_mutationRate;
-            }
-            set
-            {
-                m_mutationRate = value;
-            }
-        }
-
-        public string FitnessFile
-        {
-            get
-            {
-                return m_strFitness;
-            }
-            set
-            {
-                m_strFitness = value;
-            }
-        }
-
-        /// <summary>
-        /// Сохранять наиболее подходящего человека предыдущего поколения вместо худшего в текущем
-        /// </summary>
-        public bool Elitism
-        {
-            get
-            {
-                return m_elitism;
-            }
-            set
-            {
-                m_elitism = value;
-            }
-        }
-
+        
         public void GetBest(out double[] values, out double fitness)
         {
-            Genome g = ((Genome)m_thisGeneration[m_populationSize - 1]);
+            Genome g = ((Genome)m_thisGeneration[populationSize - 1]);
             values = new double[g.Length];
             g.GetValues(ref values);
             fitness = (double)g.Fitness;
-        }
-
-        public void GetWorst(out double[] values, out double fitness)
-        {
-            GetNthGenome(0, out values, out fitness);
-        }
-
-        public void GetNthGenome(int n, out double[] values, out double fitness)
-        {
-            if (n < 0 || n > m_populationSize - 1)
-                throw new ArgumentOutOfRangeException("n too large, or too small");
-            Genome g = ((Genome)m_thisGeneration[n]);
-            values = new double[g.Length];
-            g.GetValues(ref values);
-            fitness = (double)g.Fitness;
-        }
+        }       
     }
 }

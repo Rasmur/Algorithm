@@ -19,30 +19,19 @@ public class Test
 
     public static void Main()
     {
-        //  Crossover		= 80%
-        //  Mutation		=  5%
-        //  Population size = 100
-        //  Generations		= 2000
-        //  Genome size		= 2
-        GA ga = new GA(0.8, 0.05, 100, 2000, 2);
+        GA ga = new GA();
 
         ga.FitnessFunction = new GAFunction(theActualFunction);
 
-        //ga.FitnessFile = @"H:\fitness.csv";
-        ga.Elitism = true;
         ga.Go();
 
         double[] values;
         double fitness;
         ga.GetBest(out values, out fitness);
-        System.Console.WriteLine("Best ({0}):", fitness);
+        Console.WriteLine("Best ({0}):", fitness);
         for (int i = 0; i < values.Length; i++)
-            System.Console.WriteLine("{0} ", values[i]);
-
-        ga.GetWorst(out values, out fitness);
-        System.Console.WriteLine("\nWorst ({0}):", fitness);
-        for (int i = 0; i < values.Length; i++)
-            System.Console.WriteLine("{0} ", values[i]);
+            Console.WriteLine("{0} ", values[i]);
+        
         Console.ReadLine();
     }
 }

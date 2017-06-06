@@ -9,19 +9,14 @@ namespace btl.generic
     /// </summary>
     public class Genome
     {
-        public Genome()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
-        public Genome(int length)
-        {
-            m_length = length;
-            m_genes = new double[length];
-            CreateGenes();
-        }
-        public Genome(int length, bool createGenes)
+        public double[] m_genes;
+        private int m_length;
+        private double m_fitness;
+        static Random m_random = new Random();
+
+        private static double mutationRate;
+
+        public Genome(int length, bool createGenes = true)
         {
             m_length = length;
             m_genes = new double[length];
@@ -40,7 +35,6 @@ namespace btl.generic
 
         private void CreateGenes()
         {
-            // DateTime d = DateTime.UtcNow;
             for (int i = 0; i < m_length; i++)
                 m_genes[i] = m_random.NextDouble();
         }
@@ -76,7 +70,7 @@ namespace btl.generic
         {
             for (int pos = 0; pos < m_length; pos++)
             {
-                if (m_random.NextDouble() < m_mutationRate)
+                if (m_random.NextDouble() < mutationRate)
                     m_genes[pos] = (m_genes[pos] + m_random.NextDouble()) / 2.0;
             }
         }
@@ -86,28 +80,11 @@ namespace btl.generic
             return m_genes;
         }
 
-        public void Output()
-        {
-            for (int i = 0; i < m_length; i++)
-            {
-                System.Console.WriteLine("{0:F4}", m_genes[i]);
-            }
-            System.Console.Write("\n");
-        }
-
         public void GetValues(ref double[] values)
         {
             for (int i = 0; i < m_length; i++)
                 values[i] = m_genes[i];
         }
-
-
-        public double[] m_genes;
-        private int m_length;
-        private double m_fitness;
-        static Random m_random = new Random();
-
-        private static double m_mutationRate;
 
         public double Fitness
         {
@@ -121,18 +98,15 @@ namespace btl.generic
             }
         }
 
-
-
-
         public static double MutationRate
         {
             get
             {
-                return m_mutationRate;
+                return mutationRate;
             }
             set
             {
-                m_mutationRate = value;
+                mutationRate = value;
             }
         }
 
