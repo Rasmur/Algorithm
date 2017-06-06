@@ -28,7 +28,7 @@ namespace Algorithm
             populationSize = 10;
             generationSize = 200;
         }
-        
+
         /// <summary>
         /// Method which starts the GA executing.
         /// </summary>
@@ -37,12 +37,12 @@ namespace Algorithm
             fitnessTable = new ArrayList();
             thisGeneration = new ArrayList(generationSize);
             Genome.MutationRate = mutationRate;
-            
+
             //создаёт популяцию
             CreateGenomes();
 
             RankPopulation();
-            
+
             for (int i = 0; i < generationSize; i++)
             {
                 CreateNextGeneration();
@@ -67,6 +67,10 @@ namespace Algorithm
             int last = populationSize - 1;
             mid = (last - first) / 2;
 
+            if (randomFitness == 0)
+            {
+                return 0;
+            }
             //т.к. бинарный поиск в ArrayList только для точных значений, то делаем его вручную
             while (index == null && first <= last)
             {
@@ -120,6 +124,7 @@ namespace Algorithm
                 Genome g = new Genome();
                 thisGeneration.Add(g);
             }
+            Console.WriteLine("Wewewew");
         }
 
         private void CreateNextGeneration()
@@ -140,7 +145,7 @@ namespace Algorithm
                 thisGeneration.Add(child1);
                 thisGeneration.Add(child2);
             }
-
+            Console.WriteLine("Wewewew");
             thisGeneration.Sort(new GenomeComparer());
             thisGeneration.RemoveRange(0, populationSize);
         }
@@ -194,11 +199,11 @@ namespace Algorithm
                 genomeSize = value;
             }
         }
-        
+
         public void GetBest(ref double fitness)
         {
             Genome g = ((Genome)thisGeneration[populationSize - 1]);
 
-        }       
+        }
     }
 }

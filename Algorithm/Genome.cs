@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Algorithm
 {
@@ -16,21 +17,23 @@ namespace Algorithm
         public Genome()
         {
             Random random = new Random();
-            string notEqual = "";
-
-            int i;
             
+            int i;
+
+            List<int> was = new List<int>();
+
+            for (int j = 0; j < Program.tasks.Count; j++)
+            {
+                was.Add(j + 1);
+            }
+
             for (i = 0; i < Program.tasks.Count; i++)
             {
-                genes[i] = random.Next(1, Program.tasks.Count + 1);
+                genes[i] = random.Next(was[0],was[was.Count - 1]);
 
-                if (notEqual.Contains(genes[i].ToString()))
+                if (was.Contains(genes[i]))
                 {
-                    i--;
-                }
-                else
-                {
-                    notEqual += genes[i].ToString();
+                    was.Remove(genes[i]);
                 }
             }
 
@@ -38,11 +41,6 @@ namespace Algorithm
             {
                 genes[i] = random.Next(1, Program.workers.Count + 1);
             }
-        }
-
-        public void RandomGenes(int i, int end, int length)
-        {
-            
         }
         
         /// <summary>
