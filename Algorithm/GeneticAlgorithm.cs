@@ -34,11 +34,6 @@ namespace Algorithm
         /// </summary>
         public void Go()
         {
-            if (getFitness == null)
-                throw new ArgumentNullException("Необходимо задать функцию приспособленности");
-            if (genomeSize == 0)
-                throw new IndexOutOfRangeException("Размер генома установлен неверно");
-            
             fitnessTable = new ArrayList();
             thisGeneration = new ArrayList(generationSize);
             Genome.MutationRate = mutationRate;
@@ -52,16 +47,6 @@ namespace Algorithm
             {
                 CreateNextGeneration();
                 RankPopulation();
-            }
-        }
-
-        public void BeginPopulation(Worker[] workers, Task[] tasks)
-        {
-            Schedule[] begin = new Schedule[populationSize];
-
-            for (int i = 0; i < begin.Length; i++)
-            {
-
             }
         }
 

@@ -24,6 +24,7 @@ public static class Program
     {
         IO io = new IO();
         io.ParseWorkerAndTaskAndCondition(ref workers, ref tasks);
+
         GA ga = new GA();
 
         //ga.FitnessFunction = new GAFunction(theActualFunction);

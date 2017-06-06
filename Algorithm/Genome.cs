@@ -8,27 +8,23 @@ namespace Algorithm
     /// </summary>
     public class Genome
     {
-        public int[] genes;
+        public int[] genes = new int[Program.tasks.Count * 2];
         private int fitness;
         
         private static double mutationRate;
 
         public Genome()
         {
-            RandomGenes(0, Program.tasks.Count / 2, Program.tasks.Count);
-            RandomGenes(Program.tasks.Count / 2, Program.tasks.Count, Program.workers.Count);
-        }
-
-        public void RandomGenes(int i, int end, int length)
-        {
             Random random = new Random();
             string notEqual = "";
 
-            for (; i < end; i++)
+            int i;
+            
+            for (i = 0; i < Program.tasks.Count; i++)
             {
-                genes[i] = random.Next(1, length);
+                genes[i] = random.Next(1, Program.tasks.Count + 1);
 
-                if (notEqual.Contains(random.Next(1, length).ToString()))
+                if (notEqual.Contains(genes[i].ToString()))
                 {
                     i--;
                 }
@@ -37,6 +33,16 @@ namespace Algorithm
                     notEqual += genes[i].ToString();
                 }
             }
+
+            for (; i < Program.tasks.Count * 2; i++)
+            {
+                genes[i] = random.Next(1, Program.workers.Count + 1);
+            }
+        }
+
+        public void RandomGenes(int i, int end, int length)
+        {
+            
         }
         
         /// <summary>

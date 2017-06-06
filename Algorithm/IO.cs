@@ -73,10 +73,11 @@ namespace Algorithm
             //newWorker.schedule = new int[hours.Length];
 
             if (!Int32.TryParse(buff[0], out newWorker.costPerHour)) i = 0;
+            newWorker.schedule = new int[hours.Length];
             ///проверку на массив 
             for (int j = 0; j < hours.Length; j++)
             {
-                if (!Int32.TryParse(hours[j], out newWorker.schedule[j])) i = 1;
+                if (Int32.TryParse(hours[j], out newWorker.schedule[j]) == false) i = 1;
             }
 
             if (i >= 0) return ("Вы неверно ввели " + buff[i] + " у " + newWorker.serialNumber + "-го работника");
