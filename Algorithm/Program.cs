@@ -2,7 +2,6 @@
 using Algorithm;
 using System.Collections.Generic;
 
-
 public static class Program
 {
     public static List<Worker> workers = new List<Worker>();
@@ -25,16 +24,13 @@ public static class Program
     {
         GA ga = new GA();
 
-        ga.FitnessFunction = new GAFunction(theActualFunction);
+        //ga.FitnessFunction = new GAFunction(theActualFunction);
 
         ga.Go();
 
-        double[] values;
-        double fitness;
-        ga.GetBest(out values, out fitness);
+        double fitness = 0.0f;
+        ga.GetBest(ref fitness);
         Console.WriteLine("Best ({0}):", fitness);
-        for (int i = 0; i < values.Length; i++)
-            Console.WriteLine("{0} ", values[i]);
         
         Console.ReadLine();
     }

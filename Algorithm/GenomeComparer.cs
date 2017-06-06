@@ -8,9 +8,6 @@ namespace Algorithm
     /// </summary>
     public sealed class GenomeComparer : IComparer
     {
-        public GenomeComparer()
-        {
-        }
         public int Compare(object x, object y)
         {
             if (!(x is Genome) || !(y is Genome))
