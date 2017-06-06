@@ -2,9 +2,9 @@
 using System.Collections;
 using System.IO;
 
-namespace btl.generic
+namespace Algorithm
 {
-    public delegate double GAFunction(double[] values);
+    public delegate int GAFunction(double[] values);
 
     /// <summary>
     /// Genetic Algorithm class
@@ -19,7 +19,7 @@ namespace btl.generic
 
         private ArrayList m_thisGeneration;
         private ArrayList m_nextGeneration;
-        private ArrayList m_fitnessTable;
+        private ArrayList fitnessTable;
 
         static private GAFunction getFitness;
 
@@ -41,22 +41,29 @@ namespace btl.generic
                 throw new IndexOutOfRangeException("Размер генома установлен неверно");
 
             //  Create the fitness table.
-            m_fitnessTable = new ArrayList();
+            fitnessTable = new ArrayList();
             m_thisGeneration = new ArrayList(generationSize);
             m_nextGeneration = new ArrayList(generationSize);
             Genome.MutationRate = mutationRate;
-
-
+            
             CreateGenomes();
             RankPopulation();
-
             
             for (int i = 0; i < generationSize; i++)
             {
                 CreateNextGeneration();
                 RankPopulation();
             }
-            
+        }
+
+        public void BeginPopulation(Worker[] workers, Task[] tasks)
+        {
+            Schedule[] begin = new Schedule[populationSize];
+
+            for (int i = 0; i < begin.Length; i++)
+            {
+
+            }
         }
 
         /// <summary>
@@ -79,11 +86,11 @@ namespace btl.generic
             //т.к. бинарный поиск в ArrayList только для точных значений, то делаем его вручную
             while (index == null && first <= last)
             {
-                if (randomFitness < (double)m_fitnessTable[mid])
+                if (randomFitness < (double)fitnessTable[mid])
                 {
                     last = mid;
                 }
-                else if (randomFitness > (double)m_fitnessTable[mid])
+                else if (randomFitness > (double)fitnessTable[mid])
                 {
                     first = mid;
                 }
@@ -112,11 +119,11 @@ namespace btl.generic
 
             //  сортировка в порядке пригодности
             double fitness = 0.0;
-            m_fitnessTable.Clear();
+            fitnessTable.Clear();
             for (int i = 0; i < populationSize; i++)
             {
                 fitness += ((Genome)m_thisGeneration[i]).Fitness;
-                m_fitnessTable.Add((double)fitness);
+                fitnessTable.Add((double)fitness);
             }
         }
 

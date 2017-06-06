@@ -1,44 +1,44 @@
 ﻿using System;
 using System.Collections;
-using btl.generic;
 
-namespace btl.generic
+namespace Algorithm
 {
     /// <summary>
     /// Summary description for Genome.
     /// </summary>
     public class Genome
     {
-        public double[] m_genes;
-        private int m_length;
-        private double m_fitness;
-        static Random m_random = new Random();
-
+        public int[] genes;
+        private double fitness;
+        
         private static double mutationRate;
 
-        public Genome(int length, bool createGenes = true)
+        public Genome(Worker[] workers, Task[] tasks)
         {
-            m_length = length;
-            m_genes = new double[length];
-            if (createGenes)
-                CreateGenes();
+            RandomGenes(0, tasks.Length / 2, tasks.Length);
+            RandomGenes(tasks.Length / 2, tasks.Length, workers.Length);
         }
 
-        public Genome(ref double[] genes)
+        public void RandomGenes(int i, int end, int length)
         {
-            m_length = genes.GetLength(0);
-            m_genes = new double[m_length];
-            for (int i = 0; i < m_length; i++)
-                m_genes[i] = genes[i];
+            Random random = new Random();
+            string notEqual = "";
+
+            for (; i < end; i++)
+            {
+                genes[i] = random.Next(1, length);
+
+                if (notEqual.Contains(random.Next(1, length).ToString()))
+                {
+                    i--;
+                }
+                else
+                {
+                    notEqual += genes[i].ToString();
+                }
+            }
         }
-
-
-        private void CreateGenes()
-        {
-            for (int i = 0; i < m_length; i++)
-                m_genes[i] = m_random.NextDouble();
-        }
-
+        
         /// <summary>
         /// скрещивание
         /// </summary>
@@ -47,54 +47,55 @@ namespace btl.generic
         /// <param name="child2"></param>
 		public void Crossover(ref Genome genome2, out Genome child1, out Genome child2)
         {
-            int pos = (int)(m_random.NextDouble() * (double)m_length);
-            child1 = new Genome(m_length, false);
-            child2 = new Genome(m_length, false);
-            for (int i = 0; i < m_length; i++)
+            Random random = new Random();
+
+            int pos = (int)(m_random.NextDouble() * (double)length);
+            child1 = new Genome(length, false);
+            child2 = new Genome(length, false);
+            for (int i = 0; i < length; i++)
             {
                 if (i < pos)
                 {
-                    child1.m_genes[i] = m_genes[i];
-                    child2.m_genes[i] = genome2.m_genes[i];
+                    child1.genes[i] = genes[i];
+                    child2.genes[i] = genome2.genes[i];
                 }
                 else
                 {
-                    child1.m_genes[i] = genome2.m_genes[i];
-                    child2.m_genes[i] = m_genes[i];
+                    child1.genes[i] = genome2.genes[i];
+                    child2.genes[i] = genes[i];
                 }
             }
         }
 
-
         public void Mutate()
         {
-            for (int pos = 0; pos < m_length; pos++)
+            for (int pos = 0; pos < length; pos++)
             {
                 if (m_random.NextDouble() < mutationRate)
-                    m_genes[pos] = (m_genes[pos] + m_random.NextDouble()) / 2.0;
+                    genes[pos] = (genes[pos] + (int)m_random.NextDouble()) / 2;
             }
         }
 
-        public double[] Genes()
+        public int[] Genes()
         {
-            return m_genes;
+            return genes;
         }
 
         public void GetValues(ref double[] values)
         {
-            for (int i = 0; i < m_length; i++)
-                values[i] = m_genes[i];
+            for (int i = 0; i < length; i++)
+                values[i] = genes[i];
         }
 
-        public double Fitness
+        public int Fitness
         {
             get
             {
-                return m_fitness;
+                return fitness;
             }
             set
             {
-                m_fitness = value;
+                fitness = value;
             }
         }
 
@@ -114,7 +115,7 @@ namespace btl.generic
         {
             get
             {
-                return m_length;
+                return length;
             }
         }
     }

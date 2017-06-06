@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
-using btl.generic;
 
-namespace btl.generic
+namespace Algorithm
 {
     /// <summary>
     /// Compares genomes by fitness
