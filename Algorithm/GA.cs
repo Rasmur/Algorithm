@@ -170,8 +170,9 @@ namespace btl.generic
         {
             m_nextGeneration.Clear();
             Genome g = null;
-            if (m_elitism)
-                g = (Genome)m_thisGeneration[m_populationSize - 1];
+
+            //самый худший из текущей популяции
+            g = (Genome)m_thisGeneration[0];
 
             for (int i = 0; i < m_populationSize; i += 2)
             {
@@ -181,29 +182,35 @@ namespace btl.generic
                 parent1 = ((Genome)m_thisGeneration[parentIndex1]);
                 parent2 = ((Genome)m_thisGeneration[parentIndex2]);
 
-                if (m_random.NextDouble() < m_crossoverRate)
-                {
-                    parent1.Crossover(ref parent2, out child1, out child2);
-                }
-                else
-                {
-                    child1 = parent1;
-                    child2 = parent2;
-                }
+                parent1.Crossover(ref parent2, out child1, out child2);
+
                 child1.Mutate();
                 child2.Mutate();
 
                 m_nextGeneration.Add(child1);
                 m_nextGeneration.Add(child2);
             }
-            if (m_elitism && g != null)
-                m_nextGeneration[0] = g;
 
-            m_thisGeneration.Clear();
-            for (int i = 0; i < m_populationSize; i++)
-                m_thisGeneration.Add(m_nextGeneration[i]);
+            //m_nextGeneration.Sort(new GenomeComparer());
+
+            SelectBestIndividual();
+            //m_nextGeneration[0] = g;
+
         }
 
+        private void SelectBestIndividual()
+        {
+            ArrayList bestGeneration = new ArrayList();
+            bestGeneration.AddRange(m_thisGeneration);
+            bestGeneration.AddRange(m_nextGeneration);
+            bestGeneration.Sort(new GenomeComparer());
+
+            bestGeneration.RemoveRange(0, m_populationSize);
+
+            m_thisGeneration.Clear();
+
+            m_thisGeneration.AddRange(bestGeneration);
+        }
 
         private double m_mutationRate;
         private double m_crossoverRate;
