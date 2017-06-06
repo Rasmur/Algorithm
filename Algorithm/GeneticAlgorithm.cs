@@ -17,8 +17,7 @@ namespace Algorithm
         private int genomeSize;
         private double totalFitness;
 
-        private ArrayList m_thisGeneration;
-        private ArrayList m_nextGeneration;
+        private ArrayList thisGeneration;
         private ArrayList fitnessTable;
 
         static private GAFunction getFitness;
@@ -39,14 +38,14 @@ namespace Algorithm
                 throw new ArgumentNullException("Необходимо задать функцию приспособленности");
             if (genomeSize == 0)
                 throw new IndexOutOfRangeException("Размер генома установлен неверно");
-
-            //  Create the fitness table.
+            
             fitnessTable = new ArrayList();
-            m_thisGeneration = new ArrayList(generationSize);
-            m_nextGeneration = new ArrayList(generationSize);
+            thisGeneration = new ArrayList(generationSize);
             Genome.MutationRate = mutationRate;
             
+            //создаёт популяцию
             CreateGenomes();
+
             RankPopulation();
             
             for (int i = 0; i < generationSize; i++)
@@ -111,18 +110,17 @@ namespace Algorithm
             totalFitness = 0;
             for (int i = 0; i < populationSize; i++)
             {
-                Genome g = ((Genome)m_thisGeneration[i]);
-                g.Fitness = FitnessFunction(g.Genes());
+                Genome g = ((Genome)thisGeneration[i]);
                 totalFitness += g.Fitness;
             }
-            m_thisGeneration.Sort(new GenomeComparer());
 
-            //  сортировка в порядке пригодности
+            //thisGeneration.Sort(new GenomeComparer());
+
             double fitness = 0.0;
             fitnessTable.Clear();
             for (int i = 0; i < populationSize; i++)
             {
-                fitness += ((Genome)m_thisGeneration[i]).Fitness;
+                fitness += ((Genome)thisGeneration[i]).Fitness;
                 fitnessTable.Add((double)fitness);
             }
         }
@@ -134,51 +132,32 @@ namespace Algorithm
         {
             for (int i = 0; i < populationSize; i++)
             {
-                Genome g = new Genome(genomeSize);
-                m_thisGeneration.Add(g);
+                Genome g = new Genome();
+                thisGeneration.Add(g);
             }
         }
 
         private void CreateNextGeneration()
         {
-            m_nextGeneration.Clear();
-            Genome g = null;
-
-            //самый худший из текущей популяции
-            g = (Genome)m_thisGeneration[0];
-
             for (int i = 0; i < populationSize; i += 2)
             {
                 int parentIndex1 = RouletteSelection();
                 int parentIndex2 = RouletteSelection();
                 Genome parent1, parent2, child1, child2;
-                parent1 = ((Genome)m_thisGeneration[parentIndex1]);
-                parent2 = ((Genome)m_thisGeneration[parentIndex2]);
+                parent1 = ((Genome)thisGeneration[parentIndex1]);
+                parent2 = ((Genome)thisGeneration[parentIndex2]);
 
                 parent1.Crossover(ref parent2, out child1, out child2);
 
                 child1.Mutate();
                 child2.Mutate();
 
-                m_nextGeneration.Add(child1);
-                m_nextGeneration.Add(child2);
+                thisGeneration.Add(child1);
+                thisGeneration.Add(child2);
             }
-            
-            SelectBestIndividual();
-        }
 
-        private void SelectBestIndividual()
-        {
-            ArrayList bestGeneration = new ArrayList();
-            bestGeneration.AddRange(m_thisGeneration);
-            bestGeneration.AddRange(m_nextGeneration);
-            bestGeneration.Sort(new GenomeComparer());
-
-            bestGeneration.RemoveRange(0, populationSize);
-
-            m_thisGeneration.Clear();
-
-            m_thisGeneration.AddRange(bestGeneration);
+            thisGeneration.Sort(new GenomeComparer());
+            thisGeneration.RemoveRange(0, populationSize);
         }
 
         public GAFunction FitnessFunction
@@ -231,12 +210,10 @@ namespace Algorithm
             }
         }
         
-        public void GetBest(out double[] values, out double fitness)
+        public void GetBest(out double fitness)
         {
-            Genome g = ((Genome)m_thisGeneration[populationSize - 1]);
-            values = new double[g.Length];
-            g.GetValues(ref values);
-            fitness = (double)g.Fitness;
+            Genome g = ((Genome)thisGeneration[populationSize - 1]);
+
         }       
     }
 }

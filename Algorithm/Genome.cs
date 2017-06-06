@@ -9,7 +9,7 @@ namespace Algorithm
     public class Genome
     {
         public int[] genes;
-        private double fitness;
+        private int fitness;
         
         private static double mutationRate;
 
@@ -45,23 +45,25 @@ namespace Algorithm
         /// <param name="genome2"></param>
         /// <param name="child1"></param>
         /// <param name="child2"></param>
-		public void Crossover(ref Genome genome2, out Genome child1, out Genome child2)
+		public void Crossover(ref Genome parent2, out Genome child1, out Genome child2)
         {
             Random random = new Random();
+            int length = Program.tasks.Count * 2;
 
-            int pos = (int)(m_random.NextDouble() * (double)length);
-            child1 = new Genome(length, false);
-            child2 = new Genome(length, false);
+            int pos = (int)(random.NextDouble() * length);
+            child1 = new Genome();
+            child2 = new Genome();
+
             for (int i = 0; i < length; i++)
             {
                 if (i < pos)
                 {
                     child1.genes[i] = genes[i];
-                    child2.genes[i] = genome2.genes[i];
+                    child2.genes[i] = parent2.genes[i];
                 }
                 else
                 {
-                    child1.genes[i] = genome2.genes[i];
+                    child1.genes[i] = parent2.genes[i];
                     child2.genes[i] = genes[i];
                 }
             }
@@ -69,10 +71,14 @@ namespace Algorithm
 
         public void Mutate()
         {
-            for (int pos = 0; pos < length; pos++)
+            Random random = new Random();
+
+            for (int pos = 0; pos < Program.tasks.Count * 2; pos++)
             {
-                if (m_random.NextDouble() < mutationRate)
-                    genes[pos] = (genes[pos] + (int)m_random.NextDouble()) / 2;
+                if (random.NextDouble() < mutationRate)
+                {
+                    genes[pos] = (random.Next(-genes[pos], Program.tasks.Count)) / 2;
+                }
             }
         }
 
@@ -80,13 +86,7 @@ namespace Algorithm
         {
             return genes;
         }
-
-        public void GetValues(ref double[] values)
-        {
-            for (int i = 0; i < length; i++)
-                values[i] = genes[i];
-        }
-
+        
         public int Fitness
         {
             get
@@ -108,14 +108,6 @@ namespace Algorithm
             set
             {
                 mutationRate = value;
-            }
-        }
-
-        public int Length
-        {
-            get
-            {
-                return length;
             }
         }
     }
