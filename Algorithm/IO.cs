@@ -9,9 +9,9 @@ namespace Algorithm
         char[] separators = { ';', ' ', ':' };
 
 
-        void ParseWorkerAndTaskAndCondition(ref List<Worker> workers, ref List<Task> tasks)
+        public void ParseWorkerAndTaskAndCondition(ref List<Worker> workers, ref List<Task> tasks)
         {
-            StreamReader sr = new StreamReader("DataForAlgorithm.txt");
+            StreamReader sr = new StreamReader("C:\\Users\\Zhdanov\\Documents\\Visual Studio 2015\\Projects\\Algorithm\\Algorithm\\DataForAlgorithm.txt");
             int counterOfWorkerSerialNumber = 0;
             int counterOfTaskSerialNumber = 0;
             string line;
