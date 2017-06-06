@@ -8,12 +8,13 @@ namespace Algorithm
 {
     public class IO
     {
-        void ParseWorkerAndTask(Worker[] Workers, Task[]Tasks)
+        void ParseWorkerAndTask(List<Worker>Workers, List<Task>Tasks)
         {
-
+            
 
 
         }
+
 
         void PrintSchedule()
         {

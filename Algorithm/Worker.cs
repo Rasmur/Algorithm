@@ -11,5 +11,19 @@ namespace Algorithm
         int costPerHour;
         int[] schedule;
         int serialNumber;
+
+        public Worker()
+        {
+
+        }
+
+        public Worker(int cost, int[]schedule, int serialNumber)
+        {
+            costPerHour = cost;
+            this.schedule = schedule;
+            this.serialNumber = serialNumber;
+        }
+        
+
     }
 }
