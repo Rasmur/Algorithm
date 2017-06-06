@@ -13,10 +13,10 @@ namespace Algorithm
         
         private static double mutationRate;
 
-        public Genome(Worker[] workers, Task[] tasks)
+        public Genome()
         {
-            RandomGenes(0, tasks.Length / 2, tasks.Length);
-            RandomGenes(tasks.Length / 2, tasks.Length, workers.Length);
+            RandomGenes(0, Program.tasks.Count / 2, Program.tasks.Count);
+            RandomGenes(Program.tasks.Count / 2, Program.tasks.Count, Program.workers.Count);
         }
 
         public void RandomGenes(int i, int end, int length)

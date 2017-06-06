@@ -3,12 +3,11 @@ using Algorithm;
 using System.Collections.Generic;
 
 
-public class Test
+public static class Program
 {
-    List<Worker> workers = new List<Worker>();
-    List<Task> tasks = new List<Task>();
+    public static List<Worker> workers = new List<Worker>();
+    public static List<Task> tasks = new List<Task>();
 
-    //  optimal solution for this is (0.5,0.5)
     public static double theActualFunction(double[] values)
     {
         if (values.GetLength(0) != 2)

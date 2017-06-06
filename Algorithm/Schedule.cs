@@ -9,7 +9,12 @@ namespace Algorithm
     public class Schedule
     {
         int count;
-        
+        Genome genome;
+
+        public Schedule()
+        {
+            genome = new Genome();
+        }
 
         public void ToSchedule(Schedule schedule, Worker[] workers, Task[] tasks)
         {
