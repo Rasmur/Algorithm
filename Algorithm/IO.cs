@@ -96,9 +96,9 @@ namespace Algorithm
             int i = 0;
 
             newTask.name = buff[0];
-            if (!Boolean.TryParse(buff[1], out newTask.importance)) i = 1;
-            if (!Int32.TryParse(buff[2], out newTask.deadline)) i = 2;
-            if (!Int32.TryParse(buff[3], out newTask.duration)) i = 3;
+            if (Boolean.TryParse(buff[1], out newTask.importance) == false) i = 1;
+            if (Int32.TryParse(buff[2], out newTask.deadline) == false) i = 2;
+            if (Int32.TryParse(buff[3], out newTask.duration) == false) i = 3;
 
             if (i > 0) return ("Вы неверно ввели " + buff[i] + " в задании" + newTask.name);
             else
@@ -116,9 +116,9 @@ namespace Algorithm
             int buffCondition = 0;
             int counter = -1;
 
-            if (!Int32.TryParse(buff[0], out buffCondition) || !((buffCondition == 1) || (buffCondition == 2))) counter = 0;
-            else if (!Int32.TryParse(buff[1], out buffKey) || Program.tasks.Count < buffKey) counter = 1;
-            else if (!Int32.TryParse(buff[2], out buffValue) || Program.workers.Count < buffValue) counter = 2;
+            if ((Int32.TryParse(buff[0], out buffCondition) && ((buffCondition == 1) || (buffCondition == 2))) == false) counter = 0;
+            else if ((Int32.TryParse(buff[1], out buffKey) && Program.tasks.Count > buffKey) == false) counter = 1;
+            else if ((Int32.TryParse(buff[2], out buffValue) && Program.workers.Count > buffValue) == false) counter = 2;
 
             if (counter >= 0)
             {
