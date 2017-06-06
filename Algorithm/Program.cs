@@ -1,8 +1,14 @@
 ﻿using System;
 using btl.generic;
+using Algorithm;
+using System.Collections.Generic;
+
 
 public class Test
 {
+    List<Worker> workers = new List<Worker>();
+    List<Task> tasks = new List<Task>();
+
     //  optimal solution for this is (0.5,0.5)
     public static double theActualFunction(double[] values)
     {

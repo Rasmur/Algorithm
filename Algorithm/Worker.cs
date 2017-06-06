@@ -8,9 +8,9 @@ namespace Algorithm
 {
     public class Worker
     {
-        int costPerHour;
-        int[] schedule;
-        int serialNumber;
+        public int costPerHour;
+        public int[] schedule;
+        public int serialNumber;
 
         public Worker()
         {
@@ -24,6 +24,10 @@ namespace Algorithm
             this.serialNumber = serialNumber;
         }
         
+        ~Worker()
+        {
+
+        }
 
     }
 }

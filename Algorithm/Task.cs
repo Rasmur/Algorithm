@@ -8,10 +8,30 @@ namespace Algorithm
 {
     public class Task
     {
-        string name;
-        bool importance;
-        int deadline;
-        int serialNumber;
-        int duration;
+        public string name;
+        public bool importance;
+        public int deadline;
+        public int serialNumber;
+        public int duration;
+        
+
+        public Task()
+        {
+
+        }
+
+        public Task(string name, bool importance, int dl, int sN, int time)
+        {
+            this.name = name;
+            this.importance = importance;
+            deadline = dl;
+            serialNumber = sN;
+            duration = time;
+        }
+
+        ~Task()
+        {
+
+        }
     }
 }
