@@ -29,53 +29,82 @@ namespace Algorithm
                     {
                         Worker newWorker = new Worker();
 
-
-                        IO.TryParse();
-                        workers.Add(newWorker);
-                        ///делаем парс таска
-                        counterOfWorkerSerialNumber++;
-                        newWorker.serialNumber = counterOfTaskSerialNumber;
+                        string result = IO.TryParseForWorker(ref newWorker, buff, ref counterOfWorkerSerialNumber);
+                        if (result == null)
+                        {
+                            workers.Add(newWorker);
+                        }
+                        else Console.WriteLine(result);
                     }
                     if (buff.Length == 2)
                     {
                         Task newTask = new Task();
 
-
-                        IO.TryParse(newTask, buff);
-                        tasks.Add(newTask);
-                        ///делаем парс воркера
-                        counterOfTaskSerialNumber++;
-                        newTask.serialNumber = counterOfTaskSerialNumber;
+                        string result = IO.TryParseForTask(ref newTask, buff, ref counterOfTaskSerialNumber);
+                        if (result == null)
+                        {
+                            tasks.Add(newTask);
+                        }
+                        else Console.WriteLine(result);
                     }
                 }
             }
         }
 
 
+        /// возвращает null, если получилось распарсить
+        /// возвращает ошибку, если не удалось распарсить
+        public static string TryParseForWorker(ref Worker newWorker, string[] buff, ref int counterOfWorkerSerialNumber)
+        {
+            int i = -1;
+            string[] hours = buff[1].Split(new char[] { ',', ' ', '.' }, StringSplitOptions.RemoveEmptyEntries);
+            //newWorker.schedule = new int[hours.Length];
+
+            if (!Int32.TryParse(buff[0], out newWorker.costPerHour)) i = 0;
+            ///проверку на массив 
+            for (int j = 0; j<hours.Length;j++)
+            {
+                if (!Int32.TryParse(hours[j], out newWorker.schedule[j])) i = 1;
+            }
+
+            if (i >= 0) return ("Вы неверно ввели " + buff[i] + " у " + newWorker.serialNumber + "-го работника");
+            else
+            {
+                counterOfWorkerSerialNumber++;
+                newWorker.serialNumber = counterOfWorkerSerialNumber;
+                return null;
+            }
+        }
+
+
+        /// возвращает null, если получилось распарсить
+        /// возвращает ошибку, если не удалось распарсить
+        public static string TryParseForTask(ref Task newTask, string[] buff, ref int counterOfTaskSerialNumber)
+        {
+            int i = 0;
+
+            newTask.name = buff[0];
+            if (!Boolean.TryParse(buff[1], out newTask.importance)) i = 1;
+            if (!Int32.TryParse(buff[2], out newTask.deadline)) i = 2; ;
+            if (!Int32.TryParse(buff[3], out newTask.duration)) i = 3;
+
+            if (i > 0) return ("Вы неверно ввели " + buff[i] + " в задании" + newTask.name);
+            else
+            {
+                counterOfTaskSerialNumber++;
+                newTask.serialNumber = counterOfTaskSerialNumber;
+                return null;
+            }
+        }
+
+
+
+
+
+
         void PrintSchedule()
         {
 
-        }
-
-        public static bool TryParseForWorker(ref Worker newWorker, string[] buff)
-        {
-
-
-
-
-            return false;
-        }
-
-        public static string TryParseForTask(ref Task newTask, string[] buff)
-        {
-            int i;
-
-            newTask.name = buff[0];
-            if (Boolean.TryParse(buff[1], out newTask.importance)) i = 1;
-            if (Int32.TryParse(buff[2], out newTask.deadline)) i = 2; ;
-            if (Int32.TryParse(buff[3], out newTask.duration)) i = 3;
-
-            if (i>0) return "Вы неверно ввели" + buff[i] + "в задании" + newTask.name;
         }
 
 
