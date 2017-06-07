@@ -24,7 +24,7 @@ namespace Algorithm
             costPerHour = cost;
             this.schedule = schedule;
             this.serialNumber = serialNumber;
-            lastWork.Add(1);
+            lastWork.Add(0);
         }
         
         ~Worker()

@@ -101,7 +101,7 @@ namespace Algorithm
         {
             Task task = Program.tasks[genome.genes[number]];
             Worker worker = Program.workers[genome.genes[number + genome.genes.Length / 2]];
-            int lastWork = worker.lastWork;
+            int lastWork = worker.lastWork.Last();
 
             //чтобы не выходить за рамки дозволенного
             if ((task.duration <= worker.schedule.Length - lastWork) &&
@@ -109,7 +109,7 @@ namespace Algorithm
             {
                 totalFitness += worker.costPerHour * task.duration;
 
-                worker.lastWork += task.duration;
+                worker.lastWork.Add(lastWork + task.duration);
 
                 //отмечаем, что эту пару задачи-работника мы уже рассмотрели
                 genome.genes[number] = 0;
