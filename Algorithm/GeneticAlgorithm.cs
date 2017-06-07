@@ -243,10 +243,12 @@ namespace Algorithm
             }
         }
 
-        public void GetBest(ref double fitness)
+        public Genome GetBest(ref double fitness)
         {
-            Genome g = ((Genome)thisGeneration[populationSize - 1]);
-
+            Genome g = ((Genome)thisGeneration[0]);
+            fitness = g.fitness;
+            return g;
         }
+
     }
 }
