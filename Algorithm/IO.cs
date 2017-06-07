@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 
 namespace Algorithm
@@ -17,7 +18,7 @@ namespace Algorithm
             string line;
 
             ///доходим до начала списка
-            while((line=sr.ReadLine())!="Ваш список:")
+            while ((line = sr.ReadLine()) != "Ваш список:")
             {
                 sr.ReadLine();
             }
@@ -117,7 +118,7 @@ namespace Algorithm
             int buffCondition = 0;
             int counter = -1;
 
-            string []buffArray= buff[0].Split(new char[] { ',', ':', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] buffArray = buff[0].Split(new char[] { ',', ':', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
 
             if ((Int32.TryParse(buffArray[0], out buffCondition) && ((buffCondition == 1) || (buffCondition == 2))) == false) counter = 0;
@@ -137,11 +138,16 @@ namespace Algorithm
         }
 
 
-        void PrintSchedule()
+        void PrintSchedule(GA a)
         {
-
+            //берем лучший геном, в отсортированном arraylist  
+            Genome g = (Genome)a.thisGeneration[a.thisGeneration.Count - 1];
+            int leng = g.genes.Length;
+            for (int i = 0; i < (leng + 1) / 2; i++)
+            {
+                Console.WriteLine("Работник № {0} выполняет задание {1}",
+                    Program.workers[g.genes[i]], Program.tasks[g.genes[i + (leng + 1) / 2]]);
+            }
         }
-
-
     }
 }
