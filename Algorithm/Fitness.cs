@@ -9,9 +9,14 @@ namespace Algorithm
     public class Fitness
     {
         int totalFitness = 0;
-        Genome newGenome = new Genome(415);
+        Genome newGenome = new Genome(428);
         Dictionary<int, int> necessity ;
         Dictionary<int, int> atTheSameTime;
+
+        //запоминать начало работы у работника при условии одинакового выполнения
+        int beginWorker = 0;
+        bool startWorker = false;
+        bool endWorker = false;
 
         public Fitness(Genome genome)
         {
@@ -40,7 +45,7 @@ namespace Algorithm
             {
                 CheckCondition(number);
 
-                if (newGenome.genes[number] != 0 && CountFitness(number) == 0)
+                if (CountFitness(number) == 0)
                 {
                     return 0;
                 }
@@ -52,9 +57,8 @@ namespace Algorithm
                     if (newGenome.genes[i] != 0)
                     {
                         task = Program.tasks[newGenome.genes[i] - 1];
-                        CheckCondition(i);
-
-                        if (CountFitness(i) == 0)
+                        
+                        if (CheckCondition(i) == 0 || CountFitness(i) == 0)
                         {
                             return 0;
                         }
@@ -68,7 +72,7 @@ namespace Algorithm
         /// проверка условий
         /// </summary>
         /// <param name="number">номер задачи</param>
-        private void CheckCondition(int number)
+        private int CheckCondition(int number)
         {
             for (int i = 0; i < atTheSameTime.Count; i++)
             {
@@ -76,13 +80,34 @@ namespace Algorithm
                 {
                     int value = atTheSameTime[newGenome.genes[number]];
                     atTheSameTime.Remove(newGenome.genes[number]);
-                    FitnessFunction(value);
+
+                    //дан старт запоминанию
+                    startWorker = true;
+                    
+                    if (FitnessFunction(value) == 0)
+                    {
+                        startWorker = false;
+                        return 0;
+                    }
+
+                    startWorker = false;
+                    endWorker = true;
                 }
                 if (atTheSameTime.ContainsValue(newGenome.genes[number]))
                 {
                     int key = atTheSameTime.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     atTheSameTime.Remove(key);
-                    FitnessFunction(key);
+
+                    startWorker = true;
+
+                    if (FitnessFunction(key) == 0)
+                    {
+                        startWorker = false;
+                        return 0;
+                    }
+
+                    startWorker = false;
+                    endWorker = true;
                 }
             }
 
@@ -92,10 +117,14 @@ namespace Algorithm
                 {
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
-
-                    FitnessFunction(key);
+                    
+                    if (FitnessFunction(key) == 0)
+                    {
+                        return 0;
+                    }
                 }
             }
+            return 1;
         }
 
         /// <summary>
@@ -118,6 +147,34 @@ namespace Algorithm
                 {
                     totalFitness += worker.costPerHour * task.duration;
 
+                    //запоминать ли начальную позицию
+                    if (startWorker)
+                    {
+                        beginWorker = worker.schedule[lastWork];
+                        startWorker = false;
+                    }
+                    else if (endWorker)
+                    {
+                        if (worker.schedule.Contains(beginWorker))
+                        {
+                            endWorker = false;
+                            int buff = lastWork;
+
+                            for (int i = 0; i < worker.schedule.Length; i++)
+                            {
+                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
+                                {
+                                    lastWork = i + task.duration;
+                                }
+                            }
+
+                            if (buff == lastWork)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+
                     worker.lastWork.Add(lastWork + task.duration);
 
                     //отмечаем, что эту пару задачи-работника мы уже рассмотрели
@@ -127,11 +184,11 @@ namespace Algorithm
                     return 1;
                 }
                 //если задача неважна
-                else if (!task.importance)
+                else if (!task.importance && !endWorker)
                 {
-                    task.done = false;
                     return 1;
                 }
+                endWorker = false;
             }
             return 0;
         }

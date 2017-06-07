@@ -17,9 +17,11 @@ public static class Program
         //ga.FitnessFunction = new GAFunction(theActualFunction);
 
         ga.Go();
-        double fitness = 0.0f;
-        ga.GetBest(ref fitness);
-        Console.WriteLine("Best: {0}", fitness);
+
+        Output output = new Output(ga.thisGeneration[0] as Genome);
+        //double fitness = 0.0f;
+        //ga.GetBest(ref fitness);
+        //Console.WriteLine("Best: {0}", fitness);
         //io.PrintSchedule(ga);
     
         

@@ -15,6 +15,7 @@ namespace Algorithm
 
         public Output(Genome genome)
         {
+            Console.WriteLine("Минимальный результат: " + genome.fitness);
             for (int i = 0; i < Program.workers.Count; i++)
             {
                 Program.workers[i].lastWork.Clear();
@@ -105,7 +106,15 @@ namespace Algorithm
                 {
                     totalFitness += worker.costPerHour * task.duration;
 
-                    Console.Write("Работник № {0}: ", worker.serialNumber);
+                    Console.Write("Работник № {0}:", worker.serialNumber);
+
+                    for (int i = lastWork; i < lastWork + task.duration; i++)
+                    {
+                        Console.Write(" {0},", worker.schedule[i]);
+                        
+                    }
+
+                    Console.WriteLine(" выполнил " + task.name);
 
                     worker.lastWork.Add(lastWork + task.duration);
 
