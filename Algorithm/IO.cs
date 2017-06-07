@@ -6,7 +6,7 @@ namespace Algorithm
 {
     public class IO
     {
-        char[] separators = { ';', ' ', ':' };
+        char[] separators = { ';' };
 
 
         public void ParseWorkerAndTaskAndCondition(ref List<Worker> workers, ref List<Task> tasks)
@@ -53,7 +53,7 @@ namespace Algorithm
                         else Console.WriteLine(result);
                     }
                     //если это условие
-                    else if (buff.Length == 3)
+                    else if (buff.Length == 1)
                     {
                         string result = TryParseForCondition(buff);
                         if (result != null) Console.WriteLine(result);
@@ -117,13 +117,16 @@ namespace Algorithm
             int buffCondition = 0;
             int counter = -1;
 
-            if ((Int32.TryParse(buff[0], out buffCondition) && ((buffCondition == 1) || (buffCondition == 2))) == false) counter = 0;
-            else if ((Int32.TryParse(buff[1], out buffKey) && Program.tasks.Count > buffKey) == false) counter = 1;
-            else if ((Int32.TryParse(buff[2], out buffValue) && Program.workers.Count > buffValue) == false) counter = 2;
+            string []buffArray= buff[0].Split(new char[] { ',', ':', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            if ((Int32.TryParse(buffArray[0], out buffCondition) && ((buffCondition == 1) || (buffCondition == 2))) == false) counter = 0;
+            else if ((Int32.TryParse(buffArray[1], out buffKey) && Program.tasks.Count >= buffKey) == false) counter = 1;
+            else if ((Int32.TryParse(buffArray[2], out buffValue) && Program.tasks.Count >= buffValue) == false) counter = 2;
 
             if (counter >= 0)
             {
-                return ("Ошибка в условии " + buff[counter]);
+                return ("Ошибка в условии " + buffArray[counter]);
             }
             else
             {
