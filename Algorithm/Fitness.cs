@@ -15,15 +15,18 @@ namespace Algorithm
 
         public Fitness(Genome genome)
         {
+            //создаём копию workers
             for (int i = 0; i < Program.workers.Count; i++)
             {
                 Program.workers[i].lastWork.Clear();
                 Program.workers[i].lastWork.Add(0);
             }
 
+            //создаём копии словарей
             necessity = new Dictionary<int, int>(Conditions.necessity);
             atTheSameTime = new Dictionary<int, int>(Conditions.atTheSameTime);
 
+            //копию генома
             genome.genes.CopyTo(newGenome.genes, 0);
             
             genome.fitness = FitnessFunction();
@@ -61,6 +64,10 @@ namespace Algorithm
             return totalFitness;
         }
 
+        /// <summary>
+        /// проверка условий
+        /// </summary>
+        /// <param name="number">номер задачи</param>
         private void CheckCondition(int number)
         {
             for (int i = 0; i < atTheSameTime.Count; i++)
@@ -91,15 +98,21 @@ namespace Algorithm
             }
         }
 
+        /// <summary>
+        /// непосредственно подсчитывается фитнесс
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
         private int CountFitness(int number)
         {
+            //если задача ещё не рассмотрена
             if (newGenome.genes[number] != 0)
             {
                 Task task = Program.tasks[newGenome.genes[number] - 1];
                 Worker worker = Program.workers[newGenome.genes[number + newGenome.genes.Length / 2] - 1];
                 int lastWork = worker.lastWork.Last();
 
-                //чтобы не выходить за рамки дозволенного
+                //чтобы не выходить за рамки дозволенного и проверка на работоспособность
                 if ((task.duration <= worker.schedule.Length - lastWork) &&
                     worker.schedule[task.duration + lastWork - 1] <= task.deadline)
                 {
@@ -113,6 +126,7 @@ namespace Algorithm
 
                     return 1;
                 }
+                //если задача неважна
                 else if (!task.importance)
                 {
                     task.done = false;

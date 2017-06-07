@@ -105,6 +105,8 @@ namespace Algorithm
                 {
                     totalFitness += worker.costPerHour * task.duration;
 
+                    Console.Write("Работник № {0}: ", worker.serialNumber);
+
                     worker.lastWork.Add(lastWork + task.duration);
 
                     //отмечаем, что эту пару задачи-работника мы уже рассмотрели
