@@ -146,7 +146,7 @@ namespace Algorithm
             for (int i = 0; i < (leng + 1) / 2; i++)
             {
                 Console.WriteLine("Работник № {0} выполняет задание {1}",
-                    Program.workers[g.genes[i]], Program.tasks[g.genes[i + leng + 1 / 2]]);
+                    Program.workers[g.genes[i]], Program.tasks[g.genes[i + (leng + 1) / 2]]);
             }
         }
     }
