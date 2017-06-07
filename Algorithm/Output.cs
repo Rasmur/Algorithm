@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Algorithm
 {
-    public class Fitness
+    public class Output
     {
         int totalFitness = 0;
         Genome newGenome = new Genome(415);
-        Dictionary<int, int> necessity ;
+        Dictionary<int, int> necessity;
         Dictionary<int, int> atTheSameTime;
 
-        public Fitness(Genome genome)
+        public Output(Genome genome)
         {
             for (int i = 0; i < Program.workers.Count; i++)
             {
@@ -25,7 +25,7 @@ namespace Algorithm
             atTheSameTime = new Dictionary<int, int>(Conditions.atTheSameTime);
 
             genome.genes.CopyTo(newGenome.genes, 0);
-            
+
             genome.fitness = FitnessFunction();
         }
 

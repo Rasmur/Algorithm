@@ -9,7 +9,7 @@ public static class Program
 
     public static void Main()
     {
-        IO io = new IO();
+        Input io = new Input();
         io.ParseWorkerAndTaskAndCondition(ref workers, ref tasks);
 
         GA ga = new GA();
@@ -20,7 +20,7 @@ public static class Program
         double fitness = 0.0f;
         ga.GetBest(ref fitness);
         Console.WriteLine("Best: {0}", fitness);
-        io.PrintSchedule(ga);
+        //io.PrintSchedule(ga);
     
         
         Console.ReadLine();

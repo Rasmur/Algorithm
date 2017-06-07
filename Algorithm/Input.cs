@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Algorithm
 {
-    public class IO
+    public class Input
     {
         char[] separators = { ';' };
 
@@ -34,7 +34,7 @@ namespace Algorithm
                     {
                         Worker newWorker = new Worker();
 
-                        string result = IO.TryParseForWorker(ref newWorker, buff, ref counterOfWorkerSerialNumber);
+                        string result = Input.TryParseForWorker(ref newWorker, buff, ref counterOfWorkerSerialNumber);
                         if (result == null)
                         {
                             workers.Add(newWorker);
@@ -46,7 +46,7 @@ namespace Algorithm
                     {
                         Task newTask = new Task();
 
-                        string result = IO.TryParseForTask(ref newTask, buff, ref counterOfTaskSerialNumber);
+                        string result = Input.TryParseForTask(ref newTask, buff, ref counterOfTaskSerialNumber);
                         if (result == null)
                         {
                             tasks.Add(newTask);
