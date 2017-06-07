@@ -17,7 +17,7 @@ namespace Algorithm
         private int genomeSize;
         public double totalFitness;
 
-        private ArrayList thisGeneration;
+        public ArrayList thisGeneration;
         private ArrayList fitnessTable;
 
         static private GAFunction getFitness;
