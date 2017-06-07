@@ -32,7 +32,7 @@ namespace Algorithm
             {
                 CheckCondition(number);
 
-                if (CountFitness(number) == 0)
+                if (newGenome.genes[number] != 0 && CountFitness(number) == 0)
                 {
                     return 0;
                 }
