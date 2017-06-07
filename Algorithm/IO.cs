@@ -20,7 +20,7 @@ namespace Algorithm
             ///доходим до начала списка
             while ((line = sr.ReadLine()) != "Ваш список:")
             {
-                sr.ReadLine();
+             //   sr.ReadLine();
             }
 
             ///пока не дошли до конца файла
