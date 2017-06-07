@@ -13,9 +13,9 @@ namespace Algorithm
             if (!(x is Genome) || !(y is Genome))
                 throw new ArgumentException("Not of type Genome");
 
-            if (((Genome)x).Fitness > ((Genome)y).Fitness)
+            if (((Genome)x).fitness > ((Genome)y).fitness)
                 return 1;
-            else if (((Genome)x).Fitness == ((Genome)y).Fitness)
+            else if (((Genome)x).fitness == ((Genome)y).fitness)
                 return 0;
             else
                 return -1;

@@ -11,9 +11,10 @@ namespace Algorithm
         int totalFitness = 0;
         Genome genome;
 
-        Fitness(Genome genome)
+        public Fitness(Genome genome)
         {
             this.genome = genome;
+            genome.fitness = FitnessFunction();
         }
 
         public int FitnessFunction(int number = -1)
@@ -56,24 +57,25 @@ namespace Algorithm
             {
                 if (Conditions.atTheSameTime.ContainsKey(genome.genes[number]))
                 {
-                    FitnessFunction(Conditions.atTheSameTime[genome.genes[number]]);
+                    int value = Conditions.atTheSameTime[genome.genes[number]];
+                    Conditions.atTheSameTime.Remove(genome.genes[number]);
+                    FitnessFunction(value);
                 }
                 if (Conditions.atTheSameTime.ContainsValue(genome.genes[number]))
                 {
                     int key = Conditions.atTheSameTime.FirstOrDefault(x => x.Value == genome.genes[number]).Key;
+                    Conditions.atTheSameTime.Remove(key);
                     FitnessFunction(key);
                 }
             }
 
             for (int i = 0; i < Conditions.necessity.Count; i++)
             {
-                if (Conditions.necessity.ContainsKey(genome.genes[number]))
-                {
-                    FitnessFunction(Conditions.necessity[genome.genes[number]]);
-                }
                 if (Conditions.necessity.ContainsValue(genome.genes[number]))
                 {
                     int key = Conditions.necessity.FirstOrDefault(x => x.Value == genome.genes[number]).Key;
+                    Conditions.necessity.Remove(key);
+
                     FitnessFunction(key);
                 }
             }
@@ -98,7 +100,7 @@ namespace Algorithm
         private int CountFitness(int number)
         {
             Task task = Program.tasks[genome.genes[number]];
-            Worker worker = new Worker();
+            Worker worker = Program.workers[genome.genes[number + genome.genes.Length / 2]];
             int lastWork = worker.lastWork;
 
             //чтобы не выходить за рамки дозволенного
@@ -106,6 +108,8 @@ namespace Algorithm
                 worker.schedule[task.duration + lastWork - 1] <= task.deadline)
             {
                 totalFitness += worker.costPerHour * task.duration;
+
+                worker.lastWork += task.duration;
 
                 //отмечаем, что эту пару задачи-работника мы уже рассмотрели
                 genome.genes[number] = 0;

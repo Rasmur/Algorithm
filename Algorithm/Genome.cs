@@ -10,7 +10,7 @@ namespace Algorithm
     public class Genome
     {
         public int[] genes = new int[Program.tasks.Count * 2];
-        private int fitness;
+        public int fitness;
         
         private static double mutationRate;
 
@@ -35,11 +35,15 @@ namespace Algorithm
                 {
                     was.Remove(genes[i]);
                 }
+                else
+                {
+                    i--;
+                }
             }
 
             for (; i < Program.tasks.Count * 2; i++)
             {
-                genes[i] = random.Next(1, Program.workers.Count + 1);
+                genes[i] = random.Next(1, Program.workers.Count-1);
             }
         }
         
@@ -77,11 +81,21 @@ namespace Algorithm
         {
             Random random = new Random();
 
-            for (int pos = 0; pos < Program.tasks.Count * 2; pos++)
+            int past;
+
+            for (int pos = 0; pos < Program.tasks.Count * 2 - 1; pos++)
             {
                 if (random.NextDouble() < mutationRate)
                 {
-                    genes[pos] = (random.Next(-genes[pos], Program.tasks.Count)) / 2;
+                    past = genes[pos];
+                    genes[pos] = (random.Next(1, Program.workers.Count - 1));
+                    
+                    //проверка на изменение номера задачи
+                    //если изменилось, то это расписание заведомо не может работать
+                    if (pos <= Program.tasks.Count - 1 && past != genes[pos])
+                    {
+                        genes[pos] = past;
+                    }
                 }
             }
         }
@@ -91,18 +105,6 @@ namespace Algorithm
             return genes;
         }
         
-        public int Fitness
-        {
-            get
-            {
-                return fitness;
-            }
-            set
-            {
-                fitness = value;
-            }
-        }
-
         public static double MutationRate
         {
             get

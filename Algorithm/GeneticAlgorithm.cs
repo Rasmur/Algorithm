@@ -15,7 +15,7 @@ namespace Algorithm
         private int populationSize;
         private int generationSize;
         private int genomeSize;
-        private double totalFitness;
+        public double totalFitness;
 
         private ArrayList thisGeneration;
         private ArrayList fitnessTable;
@@ -100,7 +100,7 @@ namespace Algorithm
             for (int i = 0; i < populationSize; i++)
             {
                 Genome g = ((Genome)thisGeneration[i]);
-                totalFitness += g.Fitness;
+                totalFitness += g.fitness;
             }
 
             //thisGeneration.Sort(new GenomeComparer());
@@ -109,7 +109,7 @@ namespace Algorithm
             fitnessTable.Clear();
             for (int i = 0; i < populationSize; i++)
             {
-                fitness += ((Genome)thisGeneration[i]).Fitness;
+                fitness += ((Genome)thisGeneration[i]).fitness;
                 fitnessTable.Add((double)fitness);
             }
         }
@@ -122,6 +122,9 @@ namespace Algorithm
             for (int i = 0; i < populationSize; i++)
             {
                 Genome g = new Genome();
+
+                Fitness fitnessFunction = new Fitness(g);
+                
                 thisGeneration.Add(g);
             }
             Console.WriteLine("Wewewew");
@@ -129,18 +132,25 @@ namespace Algorithm
 
         private void CreateNextGeneration()
         {
+            Fitness fitnessFunction;
             for (int i = 0; i < populationSize; i += 2)
             {
                 int parentIndex1 = RouletteSelection();
                 int parentIndex2 = RouletteSelection();
                 Genome parent1, parent2, child1, child2;
                 parent1 = ((Genome)thisGeneration[parentIndex1]);
+                fitnessFunction = new Fitness(parent1);
+                
                 parent2 = ((Genome)thisGeneration[parentIndex2]);
+                fitnessFunction = new Fitness(parent2);
 
                 parent1.Crossover(ref parent2, out child1, out child2);
 
                 child1.Mutate();
+                fitnessFunction = new Fitness(child1);
+
                 child2.Mutate();
+                fitnessFunction = new Fitness(child2);
 
                 thisGeneration.Add(child1);
                 thisGeneration.Add(child2);
