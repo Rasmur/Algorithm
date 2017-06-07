@@ -20,7 +20,7 @@ namespace Algorithm
             ///доходим до начала списка
             while ((line = sr.ReadLine()) != "Ваш список:")
             {
-             //   sr.ReadLine();
+                //sr.ReadLine();
             }
 
             ///пока не дошли до конца файла
@@ -138,15 +138,22 @@ namespace Algorithm
         }
 
 
-        void PrintSchedule(GA a)
+        public void PrintSchedule(GA a)
         {
             //берем лучший геном, в отсортированном arraylist  
-            Genome g = (Genome)a.thisGeneration[a.thisGeneration.Count - 1];
+            Genome g = (Genome)a.thisGeneration[0];
             int leng = g.genes.Length;
-            for (int i = 0; i < (leng + 1) / 2; i++)
+
+            //foreach (var worker in Program.workers)
+            //{
+
+            //}
+
+
+            for (int i = 0; i < leng / 2 - 1; i++)
             {
-                Console.WriteLine("Работник № {0} выполняет задание {1}",
-                    Program.workers[g.genes[i]], Program.tasks[g.genes[i + (leng + 1) / 2]]);
+                Console.WriteLine("Работник № {1} выполняет задание {0}",
+                    Program.tasks[g.genes[i]].name, Program.workers[g.genes[i + leng / 2]].serialNumber);
             }
             Console.WriteLine("Общая стоимость: " + g.fitness);
         }
