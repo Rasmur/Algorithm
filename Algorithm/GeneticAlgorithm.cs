@@ -126,7 +126,7 @@ namespace Algorithm
                 Genome g = new Genome(i);
 
                 Fitness fitnessFunction = new Fitness(g);
-                
+
                 thisGeneration.Add(g);
             }
         }
@@ -158,42 +158,42 @@ namespace Algorithm
             }
             Console.WriteLine("Wewewew");
             thisGeneration.Sort(new Comparer());
-            
+
             if ((thisGeneration[0] as Genome).fitness == 0)
             {
-               SelectTheBest(thisGeneration);
+                SelectTheBest(ref thisGeneration);
             }
-            else
-            {
-                for (int count = thisGeneration.Count / 2, i = 0; i < count; i++)
-                {
-                    thisGeneration.RemoveAt(count);
-                }
-                //thisGeneration.RemoveRange(thisGeneration.Count / 2, thisGeneration.Count-1);
 
+            for (int count = thisGeneration.Count / 2, i = 0; i < count; i++)
+            {
+                thisGeneration.RemoveAt(count);
             }
-            //thisGeneration.RemoveRange(0, populationSize);
         }
 
-        void SelectTheBest(ArrayList generation)
+        void SelectTheBest(ref ArrayList generation)
         {
             object x = new Genome(42);
             ArrayList newList = new ArrayList();
             //generation.LastIndexOf(((Genome)x).fitness = 0);
-            int target = generation.LastIndexOf(((Genome)x).fitness = 0);
 
-            for (int i = target; i < generation.Count; i++)
+            int target;
+            for (target = 0; (thisGeneration[target + 1] as Genome).fitness == 0; target++)
+            { }
+            //int target = generation.LastIndexOf(((Genome)x).fitness = 0);
+
+            for (int i = target + 1; i < generation.Count; i++)
             {
                 newList.Add(generation[i]);
-                
+
             }
 
-            for (int i = 0; i < target; i++)
+            for (int i = 0; i < target + 1; i++)
             {
                 newList.Add(0);
             }
 
-            generation = newList;
+            generation = new ArrayList(newList);
+            //            generation = newList;
         }
         public GAFunction FitnessFunction
         {
