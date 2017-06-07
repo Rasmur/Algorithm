@@ -12,11 +12,11 @@ namespace Algorithm
         public int[] schedule;
         public int serialNumber;
 
-        public List<int> lastWork;
+        public List<int> lastWork = new List<int>();
 
         public Worker()
         {
-
+            lastWork.Add(0);
         }
 
         public Worker(int cost, int[]schedule, int serialNumber)
@@ -24,7 +24,6 @@ namespace Algorithm
             costPerHour = cost;
             this.schedule = schedule;
             this.serialNumber = serialNumber;
-            lastWork.Add(0);
         }
         
         ~Worker()

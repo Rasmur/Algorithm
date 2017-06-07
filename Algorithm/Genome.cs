@@ -11,18 +11,18 @@ namespace Algorithm
     {
         public int[] genes = new int[Program.tasks.Count * 2];
         public int fitness;
-        
+
         private static double mutationRate;
 
-        public Genome()
+        public Genome(int forRandom)
         {
-            Random random = new Random();
+            Random random = new Random(forRandom);
             
             int i;
 
             List<int> was = new List<int>();
 
-            for (int j = 0; j < Program.tasks.Count; j++)
+            for (int j = 0; j < Program.tasks.Count ; j++)
             {
                 was.Add(j + 1);
             }
@@ -43,7 +43,7 @@ namespace Algorithm
 
             for (; i < Program.tasks.Count * 2; i++)
             {
-                genes[i] = random.Next(1, Program.workers.Count-1);
+                genes[i] = random.Next(1, Program.workers.Count + 1);
             }
         }
         
@@ -58,9 +58,9 @@ namespace Algorithm
             Random random = new Random();
             int length = Program.tasks.Count * 2;
 
-            int pos = (int)(random.NextDouble() * length);
-            child1 = new Genome();
-            child2 = new Genome();
+            int pos = random.Next(length/2, length - 1);
+            child1 = new Genome(length * 7);
+            child2 = new Genome(length * 9);
 
             for (int i = 0; i < length; i++)
             {

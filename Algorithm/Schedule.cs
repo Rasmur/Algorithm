@@ -12,9 +12,6 @@ namespace Algorithm
 
         Genome genome;
 
-        public Schedule()
-        {
-            genome = new Genome();
-        }
+        
     }
 }

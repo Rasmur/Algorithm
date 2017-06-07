@@ -13,7 +13,8 @@ namespace Algorithm
         public int deadline;
         public int serialNumber;
         public int duration;
-        
+
+        public bool done = true;
 
         public Task()
         {

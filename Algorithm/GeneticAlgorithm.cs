@@ -25,8 +25,8 @@ namespace Algorithm
         public GA()
         {
             mutationRate = 0.05;
-            populationSize = 10;
-            generationSize = 200;
+            populationSize = 100;
+            generationSize = 10000;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Algorithm
         {
             for (int i = 0; i < populationSize; i++)
             {
-                Genome g = new Genome();
+                Genome g = new Genome(i);
 
                 Fitness fitnessFunction = new Fitness(g);
                 
@@ -140,7 +140,9 @@ namespace Algorithm
                 Genome parent1, parent2, child1, child2;
                 parent1 = ((Genome)thisGeneration[parentIndex1]);
                 fitnessFunction = new Fitness(parent1);
-                
+
+
+
                 parent2 = ((Genome)thisGeneration[parentIndex2]);
                 fitnessFunction = new Fitness(parent2);
 
