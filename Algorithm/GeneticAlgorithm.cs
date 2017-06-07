@@ -25,8 +25,8 @@ namespace Algorithm
         public GA()
         {
             mutationRate = 0.05;
-            populationSize = 100;
-            generationSize = 10000;
+            populationSize = 10;
+            generationSize = 100;
         }
 
         /// <summary>
@@ -127,7 +127,6 @@ namespace Algorithm
                 
                 thisGeneration.Add(g);
             }
-            Console.WriteLine("Wewewew");
         }
 
         private void CreateNextGeneration()
@@ -140,8 +139,6 @@ namespace Algorithm
                 Genome parent1, parent2, child1, child2;
                 parent1 = ((Genome)thisGeneration[parentIndex1]);
                 fitnessFunction = new Fitness(parent1);
-
-
 
                 parent2 = ((Genome)thisGeneration[parentIndex2]);
                 fitnessFunction = new Fitness(parent2);
@@ -159,9 +156,43 @@ namespace Algorithm
             }
             Console.WriteLine("Wewewew");
             thisGeneration.Sort(new GenomeComparer());
-            thisGeneration.RemoveRange(0, populationSize);
+            
+            if ((thisGeneration[0] as Genome).fitness == 0)
+            {
+               SelectTheBest(thisGeneration);
+            }
+            else
+            {
+                for (int count = thisGeneration.Count / 2, i = 0; i < count; i++)
+                {
+                    thisGeneration.RemoveAt(count);
+                }
+                //thisGeneration.RemoveRange(thisGeneration.Count / 2, thisGeneration.Count-1);
+
+            }
+            //thisGeneration.RemoveRange(0, populationSize);
         }
 
+        void SelectTheBest(ArrayList generation)
+        {
+            object x = new Genome(42);
+            ArrayList newList = new ArrayList();
+            //generation.LastIndexOf(((Genome)x).fitness = 0);
+            int target = generation.LastIndexOf(((Genome)x).fitness = 0);
+
+            for (int i = target; i < generation.Count; i++)
+            {
+                newList.Add(generation[i]);
+                
+            }
+
+            for (int i = 0; i < target; i++)
+            {
+                newList.Add(0);
+            }
+
+            generation = newList;
+        }
         public GAFunction FitnessFunction
         {
             get

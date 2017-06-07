@@ -13,6 +13,12 @@ namespace Algorithm
 
         public Fitness(Genome genome)
         {
+            for (int i = 0; i < Program.workers.Count; i++)
+            {
+                Program.workers[i].lastWork.Clear();
+                Program.workers[i].lastWork.Add(0);
+            }
+
             genome.genes.CopyTo(newGenome.genes, 0);
             
             genome.fitness = FitnessFunction();
