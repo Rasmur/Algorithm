@@ -153,7 +153,7 @@ namespace Algorithm
             for (int i = 0; i < leng / 2 - 1; i++)
             {
                 Console.WriteLine("Работник № {1} выполняет задание {0}",
-                    Program.tasks[g.genes[i]].name, Program.workers[g.genes[i + leng / 2]].serialNumber);
+                    Program.tasks[g.genes[i] - 1].name, Program.workers[g.genes[i + leng / 2] - 1].serialNumber);
             }
             Console.WriteLine("Общая стоимость: " + g.fitness);
         }

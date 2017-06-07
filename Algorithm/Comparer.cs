@@ -6,7 +6,7 @@ namespace Algorithm
     /// <summary>
     /// Compares genomes by fitness
     /// </summary>
-    public sealed class GenomeComparer : IComparer
+    public sealed class Comparer : IComparer
     {
         public int Compare(object x, object y)
         {
@@ -21,4 +21,6 @@ namespace Algorithm
                 return -1;
         }
     }
+
+    //public sealed 
 }

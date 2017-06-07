@@ -38,6 +38,8 @@ namespace Algorithm
             thisGeneration = new ArrayList(generationSize);
             Genome.MutationRate = mutationRate;
 
+            //Program.tasks.Sort();
+
             //создаёт популяцию
             CreateGenomes();
 
@@ -155,7 +157,7 @@ namespace Algorithm
                 thisGeneration.Add(child2);
             }
             Console.WriteLine("Wewewew");
-            thisGeneration.Sort(new GenomeComparer());
+            thisGeneration.Sort(new Comparer());
             
             if ((thisGeneration[0] as Genome).fitness == 0)
             {
