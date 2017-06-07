@@ -12,6 +12,8 @@ namespace Algorithm
         public int[] schedule;
         public int serialNumber;
 
+        public int lastWork = 0;
+
         public Worker()
         {
 
