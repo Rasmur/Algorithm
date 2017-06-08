@@ -39,7 +39,7 @@ namespace Algorithm
             Genome.MutationRate = mutationRate;
 
             thisGeneration.Sort(new Comparer());
-            //Program.tasks.Sort()
+           
             Program.tasks.Sort(new CompareTrue());
 
             //создаёт популяцию

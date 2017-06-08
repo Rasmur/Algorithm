@@ -18,10 +18,13 @@ namespace Algorithm
         bool startWorker = false;
         bool endWorker = false;
 
-        string secondCond = "";
+        //string secondCond = "";
 
         List<string> output = new List<string>();
         List<string> notWork = new List<string>();
+
+        int buf1;
+        int buf2;
 
         public Output(Genome genome)
         {
@@ -57,9 +60,10 @@ namespace Algorithm
 
             if (number != -1)
             {
-                CheckCondition(number);
+                buf1 = CheckCondition(number);
+                buf2 = CountFitness(number);
 
-                if (CountFitness(number) == 0)
+                if (buf1 == 0 || buf2 == 0)
                 {
                     return 0;
                 }
@@ -72,14 +76,24 @@ namespace Algorithm
                     {
                         task = Program.tasks[newGenome.genes[i] - 1];
 
-                        if (CheckCondition(i) == 0 || CountFitness(i) == 0)
+                        buf1 = CheckCondition(i);
+                        buf2 = CountFitness(i);
+
+                        if (buf1 == 0 || buf2 == 0)
                         {
                             return 0;
                         }
                     }
                 }
             }
-            return totalFitness;
+            if (totalFitness == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return totalFitness;
+            }
         }
 
         private int CheckCondition(int number)
@@ -94,7 +108,11 @@ namespace Algorithm
                     //дан старт запоминанию
                     startWorker = true;
 
-                    if (FitnessFunction(value) == 0)
+                    int j;
+                    for (j = 0; newGenome.genes[j] != value; j++)
+                    { }
+
+                    if (FitnessFunction(j) == 0)
                     {
                         startWorker = false;
                         return 0;
@@ -111,7 +129,11 @@ namespace Algorithm
 
                     startWorker = true;
 
-                    if (FitnessFunction(key) == 0)
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key; j++)
+                    { }
+
+                    if (FitnessFunction(j) == 0)
                     {
                         startWorker = false;
                         return 0;
@@ -129,21 +151,25 @@ namespace Algorithm
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
                     
-                    secondCond = Program.tasks[key - 2].name;
+                    //secondCond = Program.tasks[key - 2].name;
 
-                    if (FitnessFunction(key) == 0)
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key; j++)
+                    { }
+
+                    if (FitnessFunction(j) == 0)
                     {
                         //for (int j = 0; j < output.Count; j++)
                         //{
                         //    if (output[j].Contains(secondCond))
                         //    {
                         //        //output.RemoveAt(j);
-                                secondCond = "";
+                               // secondCond = "";
                         //    }
                         //}
                         return 0;
                     }
-                    secondCond = "";
+                    //secondCond = "";
                 }
             }
             return 1;
@@ -153,7 +179,7 @@ namespace Algorithm
         {
             if (newGenome.genes[number] != 0)
             {
-                Task task = Program.tasks[newGenome.genes[number] - 1];
+                Task task = Program.startTasks[newGenome.genes[number] - 1];
                 Worker worker = Program.workers[newGenome.genes[number + newGenome.genes.Length / 2] - 1];
                 int lastWork = worker.lastWork.Last();
 
@@ -191,6 +217,10 @@ namespace Algorithm
                                 return 0;
                             }
                         }
+                        else
+                        {
+                            return 0;
+                        }
                     }
 
                     string newOut = "";
@@ -220,18 +250,17 @@ namespace Algorithm
                     {
                         notWork.Add(task.name);
                     }
-                    if (secondCond != "")
-                    {
-                        for (int i = 0; i < output.Count; i++)
-                        {
-                            if (output[i].Contains(secondCond))
-                            {
-                                //output.RemoveAt(i);
-                                //secondCond = "";
-                                return 0;
-                            }
-                        }
-                    }
+                    
+                        //for (int i = 0; i < output.Count; i++)
+                        //{
+                        //    if (output[i].Contains(secondCond))
+                        //    {
+                        //        //output.RemoveAt(i);
+                        //        //secondCond = "";
+                        //        return 0;
+                        //    }
+                        //}
+                    
                     task.done = false;
                     return 1;
                 }

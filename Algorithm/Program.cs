@@ -6,11 +6,14 @@ public static class Program
 {
     public static List<Worker> workers = new List<Worker>();
     public static List<Task> tasks = new List<Task>();
+    public static List<Task> startTasks = new List<Task>(tasks);
 
     public static void Main()
     {
         Input io = new Input();
         io.ParseWorkerAndTaskAndCondition(ref workers, ref tasks);
+
+        startTasks.AddRange(tasks);
 
         GA ga = new GA();
 

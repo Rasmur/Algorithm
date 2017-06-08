@@ -44,8 +44,6 @@ namespace Algorithm
 
         public int FitnessFunction(int number = -1)
         {
-            Task task;
-
             if (number != -1)
             {
                 buf1 = CheckCondition(number);
@@ -58,11 +56,11 @@ namespace Algorithm
             }
             else
             {
-                for (int i = 0; i < Program.tasks.Count - 1; i++)
+                for (int i = 0; i < Program.tasks.Count; i++)
                 {
                     if (newGenome.genes[i] != 0)
                     {
-                        task = Program.tasks[newGenome.genes[i] - 1];
+                        //task = Program.tasks[newGenome.genes[i] - 1];
 
                         buf1 = CheckCondition(i);
                         buf2 = CountFitness(i);
@@ -144,17 +142,20 @@ namespace Algorithm
                     necessity.Remove(key);
 
                     int j;
-                    for (j = 0; newGenome.genes[j] != key; j++)
+                    for (j = 0; newGenome.genes[j] != key && j< newGenome.genes.Length / 2 - 1; j++)
                     { }
 
-                    cond = true;
-                    if (FitnessFunction(j) == 0)
+                    if (newGenome.genes[j] == key)
                     {
-                        cond = false;
-                        return 0;
-                    }
+                        cond = true;
+                        if (FitnessFunction(j) == 0)
+                        {
+                            cond = false;
+                            return 0;
+                        }
 
-                    cond = true;                    
+                        cond = true;
+                    }                   
                 }
             }
             return 1;
@@ -198,7 +199,7 @@ namespace Algorithm
                                 if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
                                 {
                                     buff = true;
-                                    lastWork = i + task.duration;
+                                    lastWork = i/* + task.duration*/;
                                 }
                             }
 
