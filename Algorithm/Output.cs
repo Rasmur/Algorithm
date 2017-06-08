@@ -18,7 +18,10 @@ namespace Algorithm
         bool startWorker = false;
         bool endWorker = false;
 
-        List<string> notWork = new List<string>(); 
+        string secondCond = "";
+
+        List<string> output = new List<string>();
+        List<string> notWork = new List<string>();
 
         public Output(Genome genome)
         {
@@ -35,6 +38,11 @@ namespace Algorithm
             genome.genes.CopyTo(newGenome.genes, 0);
 
             genome.fitness = FitnessFunction();
+
+            for (int i = 0; i < output.Count; i++)
+            {
+                Console.WriteLine(output[i]);
+            }
 
             for (int i = 0; i < notWork.Count; i++)
             {
@@ -63,7 +71,7 @@ namespace Algorithm
                     if (newGenome.genes[i] != 0)
                     {
                         task = Program.tasks[newGenome.genes[i] - 1];
-                        
+
                         if (CheckCondition(i) == 0 || CountFitness(i) == 0)
                         {
                             return 0;
@@ -116,33 +124,26 @@ namespace Algorithm
 
             for (int i = 0; i < necessity.Count; i++)
             {
-                if (necessity.ContainsKey(newGenome.genes[number]))
-                {
-                    necessity.Remove(newGenome.genes[number]);
-                }
                 if (necessity.ContainsValue(newGenome.genes[number]))
                 {
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
+                    
+                    secondCond = Program.tasks[key - 2].name;
 
-                    bool zero = false;
-
-                    for (int j = 0; j < Program.tasks.Count; j++)
+                    if (FitnessFunction(key) == 0)
                     {
-                        if (newGenome.genes[j] == key)
-                        {
-                            zero = true;
-                            j += Program.tasks.Count;
-                        }
+                        //for (int j = 0; j < output.Count; j++)
+                        //{
+                        //    if (output[j].Contains(secondCond))
+                        //    {
+                        //        //output.RemoveAt(j);
+                                secondCond = "";
+                        //    }
+                        //}
+                        return 0;
                     }
-
-                    if (zero)
-                    {
-                        if (FitnessFunction(key) == 0)
-                        {
-                            return 0;
-                        }
-                    }
+                    secondCond = "";
                 }
             }
             return 1;
@@ -192,15 +193,18 @@ namespace Algorithm
                         }
                     }
 
-                    Console.Write("Работник № {0}:", worker.serialNumber);
+                    string newOut = "";
+
+                    newOut += "Работник № " + worker.serialNumber + ":";
 
                     for (int i = lastWork; i < lastWork + task.duration; i++)
                     {
-                        Console.Write(" {0},", worker.schedule[i]);
-                        
+                        newOut += " " + worker.schedule[i] + ",";
                     }
 
-                    Console.WriteLine(" выполнил " + task.name);
+                    newOut += " выполнил " + task.name;
+
+                    output.Add(newOut);
 
                     worker.lastWork.Add(lastWork + task.duration);
 
@@ -215,6 +219,18 @@ namespace Algorithm
                     if (!notWork.Contains(task.name))
                     {
                         notWork.Add(task.name);
+                    }
+                    if (secondCond != "")
+                    {
+                        for (int i = 0; i < output.Count; i++)
+                        {
+                            if (output[i].Contains(secondCond))
+                            {
+                                //output.RemoveAt(i);
+                                //secondCond = "";
+                                return 0;
+                            }
+                        }
                     }
                     task.done = false;
                     return 1;

@@ -20,7 +20,14 @@ public static class Program
 
         Fitness fit = new Fitness((ga.thisGeneration[0] as Genome));
 
-        Output output = new Output(ga.thisGeneration[0] as Genome);
+        if ((ga.thisGeneration[0] as Genome).fitness != 0)
+        {
+            Output output = new Output(ga.thisGeneration[0] as Genome);
+        }
+        else
+        {
+            Console.WriteLine("Не нашлось такого расписания, которое бы удовлетворяло всем условиям");
+        }
         //double fitness = 0.0f;
         //ga.GetBest(ref fitness);
         //Console.WriteLine("Best: {0}", fitness);

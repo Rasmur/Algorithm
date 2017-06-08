@@ -18,6 +18,8 @@ namespace Algorithm
         bool startWorker = false;
         bool endWorker = false;
 
+        bool cond = false;
+
         public Fitness(Genome genome)
         {
             //создаём копию workers
@@ -43,9 +45,7 @@ namespace Algorithm
 
             if (number != -1)
             {
-                CheckCondition(number);
-
-                if (CountFitness(number) == 0)
+                if (CheckCondition(number) == 0 && CountFitness(number) == 0)
                 {
                     return 0;
                 }
@@ -65,7 +65,15 @@ namespace Algorithm
                     }
                 }
             }
-            return totalFitness;
+
+            if (totalFitness == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return totalFitness;
+            }
         }
 
         /// <summary>
@@ -117,11 +125,15 @@ namespace Algorithm
                 {
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
-                    
+
+                    cond = true;
                     if (FitnessFunction(key) == 0)
                     {
+                        cond = false;
                         return 0;
                     }
+
+                    cond = true;                    
                 }
             }
             return 1;
@@ -174,8 +186,11 @@ namespace Algorithm
                                 return 0;
                             }
                         }
+
+                        return 0;
                     }
 
+                    cond = false;
                     worker.lastWork.Add(lastWork + task.duration);
 
                     //отмечаем, что эту пару задачи-работника мы уже рассмотрели
@@ -185,12 +200,14 @@ namespace Algorithm
                     return 1;
                 }
                 //если задача неважна
-                else if (!task.importance && !endWorker)
+                else if (!task.importance && !endWorker && !cond)
                 {
+                    cond = false;
                     return 1;
                 }
                 endWorker = false;
             }
+            cond = false;
             return 0;
         }
     }

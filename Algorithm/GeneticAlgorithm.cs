@@ -103,8 +103,9 @@ namespace Algorithm
             totalFitness = 0;
             for (int i = 0; i < populationSize; i++)
             {
-                Genome g = ((Genome)thisGeneration[i]);
-                totalFitness += g.fitness;
+                //thisGeneration[i] = new Genome(444);
+                //Genome g = (Genome)thisGeneration[i];
+                totalFitness += ((Genome)thisGeneration[i]).fitness;
             }
 
             //thisGeneration.Sort(new GenomeComparer());
