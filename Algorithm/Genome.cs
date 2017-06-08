@@ -22,23 +22,28 @@ namespace Algorithm
 
             List<int> was = new List<int>();
 
-            for (int j = 0; j < Program.tasks.Count ; j++)
-            {
-                was.Add(j + 1);
-            }
+            //for (int j = 0; j < Program.tasks.Count ; j++)
+            //{
+            //    was.Add(j + 1);
+            //}
+
+            //for (i = 0; i < Program.tasks.Count; i++)
+            //{
+            //    genes[i] = random.Next(was[0],was[was.Count - 1]);
+
+            //    if (was.Contains(genes[i]))
+            //    {
+            //        was.Remove(genes[i]);
+            //    }
+            //    else
+            //    {
+            //        i--;
+            //    }
+            //}
 
             for (i = 0; i < Program.tasks.Count; i++)
             {
-                genes[i] = random.Next(was[0],was[was.Count - 1]);
-
-                if (was.Contains(genes[i]))
-                {
-                    was.Remove(genes[i]);
-                }
-                else
-                {
-                    i--;
-                }
+                genes[i] = Program.tasks[i].serialNumber;
             }
 
             for (; i < Program.tasks.Count * 2; i++)
