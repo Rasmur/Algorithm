@@ -145,6 +145,8 @@ namespace Algorithm
                     for (j = 0; newGenome.genes[j] != key && j< newGenome.genes.Length / 2 - 1; j++)
                     { }
 
+                    cond = true;
+
                     if (newGenome.genes[j] == key)
                     {
                         cond = true;
@@ -171,7 +173,7 @@ namespace Algorithm
             //если задача ещё не рассмотрена
             if (newGenome.genes[number] != 0)
             {
-                Task task = Program.tasks[newGenome.genes[number] - 1];
+                Task task = Program.startTasks[newGenome.genes[number] - 1];
                 Worker worker = Program.workers[newGenome.genes[number + newGenome.genes.Length / 2] - 1];
                 int lastWork = worker.lastWork.Last();
 

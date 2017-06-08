@@ -51,7 +51,7 @@ namespace Algorithm
             {
                 Console.WriteLine("Задание " + notWork[i] + " не удалось выполнить");
             }
-            Console.WriteLine("\nМинимальный результат: " + genome.fitness);
+            //Console.WriteLine("\nМинимальный результат: " + genome.fitness);
         }
 
         public int FitnessFunction(int number = -1)
@@ -150,11 +150,11 @@ namespace Algorithm
                 {
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
-                    
+
                     //secondCond = Program.tasks[key - 2].name;
 
                     int j;
-                    for (j = 0; newGenome.genes[j] != key; j++)
+                    for (j = 0; newGenome.genes[j] != key && j < newGenome.genes.Length / 2 - 1; j++)
                     { }
 
                     if (FitnessFunction(j) == 0)
@@ -164,7 +164,7 @@ namespace Algorithm
                         //    if (output[j].Contains(secondCond))
                         //    {
                         //        //output.RemoveAt(j);
-                               // secondCond = "";
+                        // secondCond = "";
                         //    }
                         //}
                         return 0;
@@ -250,17 +250,17 @@ namespace Algorithm
                     {
                         notWork.Add(task.name);
                     }
-                    
-                        //for (int i = 0; i < output.Count; i++)
-                        //{
-                        //    if (output[i].Contains(secondCond))
-                        //    {
-                        //        //output.RemoveAt(i);
-                        //        //secondCond = "";
-                        //        return 0;
-                        //    }
-                        //}
-                    
+
+                    //for (int i = 0; i < output.Count; i++)
+                    //{
+                    //    if (output[i].Contains(secondCond))
+                    //    {
+                    //        //output.RemoveAt(i);
+                    //        //secondCond = "";
+                    //        return 0;
+                    //    }
+                    //}
+
                     task.done = false;
                     return 1;
                 }

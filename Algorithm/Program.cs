@@ -25,6 +25,7 @@ public static class Program
 
         if ((ga.thisGeneration[0] as Genome).fitness != 0)
         {
+            Console.WriteLine("Минимальные затраты: " + (ga.thisGeneration[0] as Genome).fitness.ToString());
             Output output = new Output(ga.thisGeneration[0] as Genome);
         }
         else
