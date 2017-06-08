@@ -20,6 +20,9 @@ namespace Algorithm
 
         bool cond = false;
 
+        int buf1;
+        int buf2;
+
         public Fitness(Genome genome)
         {
             //создаём копию workers
@@ -45,20 +48,26 @@ namespace Algorithm
 
             if (number != -1)
             {
-                if (CheckCondition(number) == 0 && CountFitness(number) == 0)
+                buf1 = CheckCondition(number);
+                buf2 = CountFitness(number);
+
+                if (buf1 == 0 || buf2 == 0)
                 {
                     return 0;
                 }
             }
             else
             {
-                for (int i = 0; i < Program.tasks.Count; i++)
+                for (int i = 0; i < Program.tasks.Count - 1; i++)
                 {
                     if (newGenome.genes[i] != 0)
                     {
                         task = Program.tasks[newGenome.genes[i] - 1];
-                        
-                        if (CheckCondition(i) == 0 || CountFitness(i) == 0)
+
+                        buf1 = CheckCondition(i);
+                        buf2 = CountFitness(i);
+
+                        if (buf1 == 0 || buf2 == 0)
                         {
                             return 0;
                         }
@@ -91,8 +100,12 @@ namespace Algorithm
 
                     //дан старт запоминанию
                     startWorker = true;
-                    
-                    if (FitnessFunction(value) == 0)
+
+                    int j;
+                    for (j = 0; newGenome.genes[j] != value; j++)
+                    {}
+
+                    if (FitnessFunction(j) == 0)
                     {
                         startWorker = false;
                         return 0;
@@ -108,7 +121,11 @@ namespace Algorithm
 
                     startWorker = true;
 
-                    if (FitnessFunction(key) == 0)
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key; j++)
+                    { }
+
+                    if (FitnessFunction(j) == 0)
                     {
                         startWorker = false;
                         return 0;
@@ -126,8 +143,12 @@ namespace Algorithm
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
 
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key; j++)
+                    { }
+
                     cond = true;
-                    if (FitnessFunction(key) == 0)
+                    if (FitnessFunction(j) == 0)
                     {
                         cond = false;
                         return 0;
