@@ -158,17 +158,18 @@ namespace Algorithm
                         if (worker.schedule.Contains(beginWorker))
                         {
                             endWorker = false;
-                            int buff = lastWork;
+                            bool buff = false;
 
-                            for (int i = 0; i < worker.schedule.Length; i++)
+                            for (int i = 0; i < worker.schedule.Length && !buff; i++)
                             {
                                 if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
                                 {
+                                    buff = true;
                                     lastWork = i + task.duration;
                                 }
                             }
 
-                            if (buff == lastWork)
+                            if (!buff)
                             {
                                 return 0;
                             }

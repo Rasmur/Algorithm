@@ -25,7 +25,7 @@ namespace Algorithm
         public GA()
         {
             mutationRate = 0.05;
-            populationSize = 10;
+            populationSize = 100;
             generationSize = 100;
         }
 

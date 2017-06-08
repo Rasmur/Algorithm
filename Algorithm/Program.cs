@@ -18,6 +18,8 @@ public static class Program
 
         ga.Go();
 
+        Fitness fit = new Fitness((ga.thisGeneration[0] as Genome));
+
         Output output = new Output(ga.thisGeneration[0] as Genome);
         //double fitness = 0.0f;
         //ga.GetBest(ref fitness);

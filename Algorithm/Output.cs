@@ -13,9 +13,16 @@ namespace Algorithm
         Dictionary<int, int> necessity;
         Dictionary<int, int> atTheSameTime;
 
+        //запоминать начало работы у работника при условии одинакового выполнения
+        int beginWorker = 0;
+        bool startWorker = false;
+        bool endWorker = false;
+
+        List<string> notWork = new List<string>(); 
+
         public Output(Genome genome)
         {
-            Console.WriteLine("Минимальный результат: " + genome.fitness);
+            //Console.WriteLine("Минимальный результат: " + genome.fitness);
             for (int i = 0; i < Program.workers.Count; i++)
             {
                 Program.workers[i].lastWork.Clear();
@@ -28,6 +35,12 @@ namespace Algorithm
             genome.genes.CopyTo(newGenome.genes, 0);
 
             genome.fitness = FitnessFunction();
+
+            for (int i = 0; i < notWork.Count; i++)
+            {
+                Console.WriteLine("Задание " + notWork[i] + " не удалось выполнить");
+            }
+            Console.WriteLine("\nМинимальный результат: " + genome.fitness);
         }
 
         public int FitnessFunction(int number = -1)
@@ -38,7 +51,7 @@ namespace Algorithm
             {
                 CheckCondition(number);
 
-                if (newGenome.genes[number] != 0 && CountFitness(number) == 0)
+                if (CountFitness(number) == 0)
                 {
                     return 0;
                 }
@@ -50,9 +63,8 @@ namespace Algorithm
                     if (newGenome.genes[i] != 0)
                     {
                         task = Program.tasks[newGenome.genes[i] - 1];
-                        CheckCondition(i);
-
-                        if (CountFitness(i) == 0)
+                        
+                        if (CheckCondition(i) == 0 || CountFitness(i) == 0)
                         {
                             return 0;
                         }
@@ -62,7 +74,7 @@ namespace Algorithm
             return totalFitness;
         }
 
-        private void CheckCondition(int number)
+        private int CheckCondition(int number)
         {
             for (int i = 0; i < atTheSameTime.Count; i++)
             {
@@ -70,26 +82,70 @@ namespace Algorithm
                 {
                     int value = atTheSameTime[newGenome.genes[number]];
                     atTheSameTime.Remove(newGenome.genes[number]);
-                    FitnessFunction(value);
+
+                    //дан старт запоминанию
+                    startWorker = true;
+
+                    if (FitnessFunction(value) == 0)
+                    {
+                        startWorker = false;
+                        return 0;
+                    }
+
+                    startWorker = false;
+                    endWorker = true;
                 }
                 if (atTheSameTime.ContainsValue(newGenome.genes[number]))
                 {
                     int key = atTheSameTime.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
+
                     atTheSameTime.Remove(key);
-                    FitnessFunction(key);
+
+                    startWorker = true;
+
+                    if (FitnessFunction(key) == 0)
+                    {
+                        startWorker = false;
+                        return 0;
+                    }
+
+                    startWorker = false;
+                    endWorker = true;
                 }
             }
 
             for (int i = 0; i < necessity.Count; i++)
             {
+                if (necessity.ContainsKey(newGenome.genes[number]))
+                {
+                    necessity.Remove(newGenome.genes[number]);
+                }
                 if (necessity.ContainsValue(newGenome.genes[number]))
                 {
                     int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
                     necessity.Remove(key);
 
-                    FitnessFunction(key);
+                    bool zero = false;
+
+                    for (int j = 0; j < Program.tasks.Count; j++)
+                    {
+                        if (newGenome.genes[j] == key)
+                        {
+                            zero = true;
+                            j += Program.tasks.Count;
+                        }
+                    }
+
+                    if (zero)
+                    {
+                        if (FitnessFunction(key) == 0)
+                        {
+                            return 0;
+                        }
+                    }
                 }
             }
+            return 1;
         }
 
         private int CountFitness(int number)
@@ -105,6 +161,36 @@ namespace Algorithm
                     worker.schedule[task.duration + lastWork - 1] <= task.deadline)
                 {
                     totalFitness += worker.costPerHour * task.duration;
+
+                    //запоминать ли начальную позицию
+                    if (startWorker)
+                    {
+                        beginWorker = worker.schedule[lastWork];
+                        startWorker = false;
+                    }
+                    else if (endWorker)
+                    {
+                        if (worker.schedule.Contains(beginWorker))
+                        {
+                            endWorker = false;
+
+                            bool buff = false;
+
+                            for (int i = 0; i < worker.schedule.Length && !buff; i++)
+                            {
+                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
+                                {
+                                    buff = true;
+                                    lastWork = i;
+                                }
+                            }
+
+                            if (!buff)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
 
                     Console.Write("Работник № {0}:", worker.serialNumber);
 
@@ -124,11 +210,16 @@ namespace Algorithm
 
                     return 1;
                 }
-                else if (!task.importance)
+                else if (!task.importance && !endWorker)
                 {
+                    if (!notWork.Contains(task.name))
+                    {
+                        notWork.Add(task.name);
+                    }
                     task.done = false;
                     return 1;
                 }
+                endWorker = false;
             }
             return 0;
         }
