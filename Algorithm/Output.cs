@@ -98,6 +98,35 @@ namespace Algorithm
 
         private int CheckCondition(int number)
         {
+            for (int i = 0; i < necessity.Count; i++)
+            {
+                if (necessity.ContainsValue(newGenome.genes[number]))
+                {
+                    int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
+                    necessity.Remove(key);
+
+                    //secondCond = Program.tasks[key - 2].name;
+
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key && j < newGenome.genes.Length / 2 - 1; j++)
+                    { }
+
+                    if (FitnessFunction(j) == 0)
+                    {
+                        //for (int j = 0; j < output.Count; j++)
+                        //{
+                        //    if (output[j].Contains(secondCond))
+                        //    {
+                        //        //output.RemoveAt(j);
+                        // secondCond = "";
+                        //    }
+                        //}
+                        return 0;
+                    }
+                    //secondCond = "";
+                }
+            }
+
             for (int i = 0; i < atTheSameTime.Count; i++)
             {
                 if (atTheSameTime.ContainsKey(newGenome.genes[number]))
@@ -144,34 +173,7 @@ namespace Algorithm
                 }
             }
 
-            for (int i = 0; i < necessity.Count; i++)
-            {
-                if (necessity.ContainsValue(newGenome.genes[number]))
-                {
-                    int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
-                    necessity.Remove(key);
-
-                    //secondCond = Program.tasks[key - 2].name;
-
-                    int j;
-                    for (j = 0; newGenome.genes[j] != key && j < newGenome.genes.Length / 2 - 1; j++)
-                    { }
-
-                    if (FitnessFunction(j) == 0)
-                    {
-                        //for (int j = 0; j < output.Count; j++)
-                        //{
-                        //    if (output[j].Contains(secondCond))
-                        //    {
-                        //        //output.RemoveAt(j);
-                        // secondCond = "";
-                        //    }
-                        //}
-                        return 0;
-                    }
-                    //secondCond = "";
-                }
-            }
+            
             return 1;
         }
 
@@ -205,7 +207,7 @@ namespace Algorithm
 
                             for (int i = 0; i < worker.schedule.Length && !buff; i++)
                             {
-                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
+                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline && (i + task.duration) < worker.schedule.Length)
                                 {
                                     buff = true;
                                     lastWork = i;

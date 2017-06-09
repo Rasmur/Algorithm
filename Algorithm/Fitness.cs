@@ -10,7 +10,7 @@ namespace Algorithm
     {
         int totalFitness = 0;
         Genome newGenome = new Genome(428);
-        Dictionary<int, int> necessity ;
+        Dictionary<int, int> necessity;
         Dictionary<int, int> atTheSameTime;
 
         //запоминать начало работы у работника при условии одинакового выполнения
@@ -38,8 +38,15 @@ namespace Algorithm
 
             //копию генома
             genome.genes.CopyTo(newGenome.genes, 0);
-            
-            genome.fitness = FitnessFunction();
+
+            if (genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 1] && genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 2] && genome.genes[genome.genes.Length / 2 + 1] != genome.genes[genome.genes.Length / 2 + 2])
+            {
+                genome.fitness = FitnessFunction();
+            }
+            else
+            {
+                genome.fitness = 0;
+            }
         }
 
         public int FitnessFunction(int number = -1)
@@ -60,8 +67,6 @@ namespace Algorithm
                 {
                     if (newGenome.genes[i] != 0)
                     {
-                        //task = Program.tasks[newGenome.genes[i] - 1];
-
                         buf1 = CheckCondition(i);
                         buf2 = CountFitness(i);
 
@@ -89,6 +94,34 @@ namespace Algorithm
         /// <param name="number">номер задачи</param>
         private int CheckCondition(int number)
         {
+
+            for (int i = 0; i < necessity.Count; i++)
+            {
+                if (necessity.ContainsValue(newGenome.genes[number]))
+                {
+                    int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
+                    necessity.Remove(key);
+
+                    int j;
+                    for (j = 0; newGenome.genes[j] != key && j < newGenome.genes.Length / 2 - 1; j++)
+                    { }
+
+                    cond = true;
+
+                    if (newGenome.genes[j] == key)
+                    {
+                        cond = true;
+                        if (FitnessFunction(j) == 0)
+                        {
+                            cond = false;
+                            return 0;
+                        }
+
+                        cond = true;
+                    }
+                }
+            }
+
             for (int i = 0; i < atTheSameTime.Count; i++)
             {
                 if (atTheSameTime.ContainsKey(newGenome.genes[number]))
@@ -96,21 +129,28 @@ namespace Algorithm
                     int value = atTheSameTime[newGenome.genes[number]];
                     atTheSameTime.Remove(newGenome.genes[number]);
 
-                    //дан старт запоминанию
-                    startWorker = true;
-
-                    int j;
-                    for (j = 0; newGenome.genes[j] != value; j++)
-                    {}
-
-                    if (FitnessFunction(j) == 0)
+                    if (newGenome.genes[value + newGenome.genes.Length/2 - 1] != newGenome.genes[number])
                     {
+                        //дан старт запоминанию
+                        startWorker = true;
+
+                        int j;
+                        for (j = 0; newGenome.genes[j] != value; j++)
+                        { }
+
+                        if (FitnessFunction(j) == 0)
+                        {
+                            startWorker = false;
+                            return 0;
+                        }
+
                         startWorker = false;
+                        endWorker = true;
+                    }
+                    else
+                    {
                         return 0;
                     }
-
-                    startWorker = false;
-                    endWorker = true;
                 }
                 if (atTheSameTime.ContainsValue(newGenome.genes[number]))
                 {
@@ -134,37 +174,11 @@ namespace Algorithm
                 }
             }
 
-            for (int i = 0; i < necessity.Count; i++)
-            {
-                if (necessity.ContainsValue(newGenome.genes[number]))
-                {
-                    int key = necessity.FirstOrDefault(x => x.Value == newGenome.genes[number]).Key;
-                    necessity.Remove(key);
-
-                    int j;
-                    for (j = 0; newGenome.genes[j] != key && j< newGenome.genes.Length / 2 - 1; j++)
-                    { }
-
-                    cond = true;
-
-                    if (newGenome.genes[j] == key)
-                    {
-                        cond = true;
-                        if (FitnessFunction(j) == 0)
-                        {
-                            cond = false;
-                            return 0;
-                        }
-
-                        cond = true;
-                    }                   
-                }
-            }
             return 1;
         }
 
         /// <summary>
-        /// непосредственно подсчитывается фитнесс
+        /// непосредственно подсчитывается пригодность
         /// </summary>
         /// <param name="number"></param>
         /// <returns></returns>
@@ -198,7 +212,7 @@ namespace Algorithm
 
                             for (int i = 0; i < worker.schedule.Length && !buff; i++)
                             {
-                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline)
+                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline && (i + task.duration) < worker.schedule.Length)
                                 {
                                     buff = true;
                                     lastWork = i/* + task.duration*/;

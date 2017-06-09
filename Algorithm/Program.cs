@@ -22,7 +22,6 @@ public static class Program
         ga.Go();
 
         Fitness fit = new Fitness((ga.thisGeneration[0] as Genome));
-
         if ((ga.thisGeneration[0] as Genome).fitness != 0)
         {
             Console.WriteLine("Минимальные затраты: " + (ga.thisGeneration[0] as Genome).fitness.ToString());
