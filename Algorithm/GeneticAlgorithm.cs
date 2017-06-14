@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.IO;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Algorithm
 {
@@ -99,23 +100,33 @@ namespace Algorithm
         /// </summary>
         private void RankPopulation()
         {
-            ///общая приспособленность поколения
-            totalFitness = 0;
-            for (int i = 0; i < populationSize; i++)
+            try
             {
-                //thisGeneration[i] = new Genome(444);
-                //Genome g = (Genome)thisGeneration[i];
-                totalFitness += ((Genome)thisGeneration[i]).fitness;
+                ///общая приспособленность поколения
+                totalFitness = 0;
+                for (int i = 0; i < populationSize; i++)
+                {
+                    //thisGeneration[i] = new Genome(444);
+                    //Genome g = (Genome)thisGeneration[i];
+                    totalFitness += ((Genome)thisGeneration[i]).fitness;
+                }
+
+                //thisGeneration.Sort(new GenomeComparer());
+
+                double fitness = 0.0;
+                fitnessTable.Clear();
+                for (int i = 0; i < populationSize; i++)
+                {
+                    fitness += ((Genome)thisGeneration[i]).fitness;
+                    fitnessTable.Add((double)fitness);
+                }
             }
-
-            //thisGeneration.Sort(new GenomeComparer());
-
-            double fitness = 0.0;
-            fitnessTable.Clear();
-            for (int i = 0; i < populationSize; i++)
+            catch(Exception)
             {
-                fitness += ((Genome)thisGeneration[i]).fitness;
-                fitnessTable.Add((double)fitness);
+                Console.WriteLine("Начальная популяция заполнилась неправильно либо её невозможно создать.\nПожалуйста, нажмите Enter и если эта надпись появится снова, то введите другие данные");
+                Console.ReadLine();
+                Process.Start(Assembly.GetExecutingAssembly().Location);
+                Environment.Exit(0);
             }
         }
 
