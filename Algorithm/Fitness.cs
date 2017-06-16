@@ -23,6 +23,8 @@ namespace Algorithm
         int buf1;
         int buf2;
 
+        int[] scheduleOther;
+
         public Fitness(Genome genome)
         {
             //создаём копию workers
@@ -39,14 +41,14 @@ namespace Algorithm
             //копию генома
             genome.genes.CopyTo(newGenome.genes, 0);
 
-            if (genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 1] && genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 2] && genome.genes[genome.genes.Length / 2 + 1] != genome.genes[genome.genes.Length / 2 + 2])
-            {
+            //if (genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 1] && genome.genes[genome.genes.Length / 2] != genome.genes[genome.genes.Length / 2 + 2] && genome.genes[genome.genes.Length / 2 + 1] != genome.genes[genome.genes.Length / 2 + 2])
+            //{
                 genome.fitness = FitnessFunction();
-            }
-            else
-            {
-                genome.fitness = 0;
-            }
+            //}
+            //else
+            //{
+                //genome.fitness = 0;
+            //}
         }
 
         public int FitnessFunction(int number = -1)
@@ -129,7 +131,7 @@ namespace Algorithm
                     int value = atTheSameTime[newGenome.genes[number]];
                     atTheSameTime.Remove(newGenome.genes[number]);
 
-                    if (newGenome.genes[value + newGenome.genes.Length/2 - 1] != newGenome.genes[number])
+                    if (newGenome.genes[value + newGenome.genes.Length / 2 - 1] != newGenome.genes[number])
                     {
                         //дан старт запоминанию
                         startWorker = true;
@@ -137,6 +139,18 @@ namespace Algorithm
                         int j;
                         for (j = 0; newGenome.genes[j] != value; j++)
                         { }
+
+                        Worker worker = Program.workers[newGenome.genes[number + newGenome.genes.Length / 2] - 1];
+                        scheduleOther = new int[worker.schedule.Length];
+
+                        try
+                        {
+                            worker.schedule.CopyTo(scheduleOther, worker.lastWork.Last());
+                        }
+                        catch(Exception)
+                        {
+                            return 0;
+                        }
 
                         if (FitnessFunction(j) == 0)
                         {
@@ -162,6 +176,18 @@ namespace Algorithm
                     int j;
                     for (j = 0; newGenome.genes[j] != key; j++)
                     { }
+
+                    Worker worker = Program.workers[newGenome.genes[number + newGenome.genes.Length / 2] - 1];
+                    scheduleOther = new int[worker.schedule.Length];
+
+                    try
+                    {
+                        worker.schedule.CopyTo(scheduleOther, worker.lastWork.Last());
+                    }
+                    catch (Exception)
+                    {
+                        return 0;
+                    }
 
                     if (FitnessFunction(j) == 0)
                     {
@@ -200,7 +226,33 @@ namespace Algorithm
                     //запоминать ли начальную позицию
                     if (startWorker)
                     {
-                        beginWorker = worker.schedule[lastWork];
+                        bool willWork = false;
+
+                        for (int i = lastWork; i < worker.schedule.Length; i++)
+                        {
+                            for (int j = 0; j < scheduleOther.Length; j++)
+                            {
+                                if (worker.schedule[i] == scheduleOther[j])
+                                {
+                                    beginWorker = worker.schedule[i];
+
+                                    if (i >= lastWork && (i + task.duration) <= task.deadline && (i + task.duration) <= worker.schedule.Length)
+                                    {
+                                        willWork = true;
+                                        lastWork = i/* + task.duration*/;
+                                    }
+
+                                    j += scheduleOther.Length;
+                                    i += worker.schedule.Length;
+                                }
+                            }
+                        }
+
+                        if (!willWork)
+                        {
+                            return 0;
+                        }
+
                         startWorker = false;
                     }
                     else if (endWorker)
@@ -212,7 +264,7 @@ namespace Algorithm
 
                             for (int i = 0; i < worker.schedule.Length && !buff; i++)
                             {
-                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline && (i + task.duration) < worker.schedule.Length)
+                                if (worker.schedule[i] == beginWorker && i >= lastWork && (i + task.duration) <= task.deadline && (i + task.duration) <= worker.schedule.Length)
                                 {
                                     buff = true;
                                     lastWork = i/* + task.duration*/;

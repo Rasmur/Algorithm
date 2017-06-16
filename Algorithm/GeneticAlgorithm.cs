@@ -26,8 +26,8 @@ namespace Algorithm
         public GA()
         {
             mutationRate = 0.05;
-            populationSize = 100;
-            generationSize = 100;
+            populationSize = 500;
+            generationSize = 500;
         }
 
         /// <summary>
@@ -106,8 +106,6 @@ namespace Algorithm
                 totalFitness = 0;
                 for (int i = 0; i < populationSize; i++)
                 {
-                    //thisGeneration[i] = new Genome(444);
-                    //Genome g = (Genome)thisGeneration[i];
                     totalFitness += ((Genome)thisGeneration[i]).fitness;
                 }
 
@@ -123,7 +121,7 @@ namespace Algorithm
             }
             catch(Exception)
             {
-                Console.WriteLine("Начальная популяция заполнилась неправильно либо её невозможно создать.\nПожалуйста, нажмите Enter и если эта надпись появится снова, то введите другие данные");
+                Console.WriteLine("Начальную популяцию невозможно создать.\nПожалуйста, нажмите Enter если хотите перезапустить алгоритм");
                 Console.ReadLine();
                 Process.Start(Assembly.GetExecutingAssembly().Location);
                 Environment.Exit(0);
